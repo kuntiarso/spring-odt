@@ -1,0 +1,82 @@
+services:
+  odt-prometheus:
+    image: prom/prometheus:v3.2.1
+    container_name: odt-prometheus
+    hostname: odt-prometheus
+    restart: on-failure:3
+    ports:
+      - "9090:9090"
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - odt-network
+
+  odt-jaeger:
+    image: jaegertracing/all-in-one:1.68.0
+    container_name: odt-jaeger
+    hostname: odt-jaeger
+    restart: on-failure:3
+    ports:
+      - "16686:16686" # Jaeger UI
+      - "14250:14250" # gRPC collector
+      - "14268:14268" # HTTP collector (Thrift)
+    networks:
+      - odt-network
+
+  odt-zipkin:
+    image: openzipkin/zipkin:3.5.0
+    container_name: odt-zipkin
+    hostname: odt-zipkin
+    restart: on-failure:3
+    ports:
+      - "9411:9411"
+    networks:
+      - odt-network
+
+  odt-otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.123.0
+    container_name: odt-otel-collector
+    hostname: odt-otel-collector
+    restart: on-failure:3
+    depends_on:
+      - odt-jaeger
+      - odt-zipkin
+    ports:
+      - "1888:1888" # pprof extension
+      - "8888:8888" # Prometheus metrics exposed by the Collector
+      - "8889:8889" # Prometheus exporter metrics
+      - "13133:13133" # health_check extension
+      - "4317:4317" # OTLP gRPC receiver
+      - "4318:4318" # OTLP http receiver
+      - "55679:55679" # zpages extension
+    command:
+      - '--config=/etc/otelcol-contrib/otel-collector-config.yml'
+    volumes:
+      - ./otel/otel-collector-config.yml:/etc/otelcol-contrib/otel-collector-config.yml
+    networks:
+      - odt-network
+
+  odt-grafana:
+    image: grafana/grafana:11.6.0
+    container_name: odt-grafana
+    hostname: odt-grafana
+    restart: on-failure:3
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=grafuser
+      - GF_SECURITY_ADMIN_PASSWORD=grafuser@secret
+    volumes:
+      - odt-grafana-data:/var/lib/grafana
+    networks:
+      - odt-network
+
+networks:
+  odt-network:
+    name: odt-network
+    driver: bridge
+
+volumes:
+  odt-grafana-data:
