@@ -1,0 +1,73 @@
+name: Build and Push Common Service to GHCR
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/**'
+      - 'tokenservice/**'
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    env:
+      WORKING_DIR: tokenservice
+      PACKAGE_NAME: spring-odt-tokenservice
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup java 21 temurin
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: temurin
+
+      - name: Cache maven packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('tokenservice/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven-
+
+      - name: Build service jar
+        working-directory: ${{ env.WORKING_DIR }}
+        run: ./mvnw clean install -DskipTests
+
+      - name: Login to GitHub Container Registry
+        run: echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build and push image to GHCR
+        env:
+          IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/${{ env.PACKAGE_NAME }}
+        run: |
+          TAG=${GITHUB_SHA::8}
+          docker build -t ${{ env.IMAGE_NAME }}:$TAG ${{ env.WORKING_DIR }}/
+          docker push ${{ env.IMAGE_NAME }}:$TAG
+          docker tag ${{ env.IMAGE_NAME }}:$TAG ${{ env.IMAGE_NAME }}:latest
+          docker push ${{ env.IMAGE_NAME }}:latest
+
+      - name: Cleanup old GHCR tags
+        run: |
+          # Single-line jq command to avoid shell quoting issues
+          PACKAGE_IDS=$(curl -s \
+            -H "Authorization: Bearer ${{ secrets.GHCR_PAT }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/users/${{ github.repository_owner }}/packages/container/${{ env.PACKAGE_NAME }}/versions" \
+            | jq -r --arg tag "${GITHUB_SHA::8}" '[.[] | select(.metadata.container.tags != null) | select((.metadata.container.tags | index("latest") | not) and (.metadata.container.tags | index($tag) | not)) | .id] | join(" ")')
+
+          if [ -n "${PACKAGE_IDS}" ]; then
+            echo "Deleting old versions: ${PACKAGE_IDS}"
+            for id in ${PACKAGE_IDS}; do
+              curl -X DELETE \
+                -H "Authorization: Bearer ${{ secrets.GHCR_PAT }}" \
+                "https://api.github.com/users/${{ github.repository_owner }}/packages/container/${{ env.PACKAGE_NAME }}/versions/${id}" \
+                || echo "Failed to delete ${id}"
+            done
+          else
+            echo "No old versions to delete"
+          fi
