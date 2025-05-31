@@ -36,10 +36,10 @@ public class SignatureHandler {
                 signature = generateNonSnap(request);
             } else if (SignatureType.SYMMETRIC.equals(request.getSigType())) {
                 log.info("Coming to symmetric signature generation");
-                signature = null;
+                throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, "Symmetric signature generation failed");
             } else {
                 log.info("Coming to asymmetric signature generation");
-                signature = null;
+                throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, "Asymmetric signature generation failed");
             }
             return ResponseEntity.status(HttpStatus.CREATED).body(signatureCoreMapper.mapResponse(signature));
         } catch (Exception ex) {
