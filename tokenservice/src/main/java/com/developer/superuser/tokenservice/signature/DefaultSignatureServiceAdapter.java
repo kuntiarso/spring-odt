@@ -18,4 +18,9 @@ public class DefaultSignatureServiceAdapter implements SignatureService {
     public void saveAsymmetric(Signature signature) {
         throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
     }
+
+    @Override
+    public Signature findSignature(String requestId) {
+        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
+    }
 }

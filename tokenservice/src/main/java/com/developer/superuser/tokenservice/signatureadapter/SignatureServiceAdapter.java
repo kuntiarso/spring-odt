@@ -2,6 +2,7 @@ package com.developer.superuser.tokenservice.signatureadapter;
 
 import com.developer.superuser.tokenservice.signature.Signature;
 import com.developer.superuser.tokenservice.signature.SignatureService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,5 +28,13 @@ public class SignatureServiceAdapter implements SignatureService {
     public void saveAsymmetric(Signature signature) {
         log.info("Saving asymmetric signature");
         signatureRepository.save(signatureEntityMapper.toEntityAsymmetric(signature));
+    }
+
+    @Override
+    public Signature findSignature(String requestId) {
+        log.info("Getting signature with requestId --- {}", requestId);
+        return signatureRepository.findByRequestId(requestId)
+                .map(signatureEntityMapper::toSignature)
+                .orElseThrow(EntityNotFoundException::new);
     }
 }

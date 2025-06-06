@@ -2,6 +2,9 @@ package com.developer.superuser.tokenservice.signatureresource;
 
 import lombok.*;
 
+@Getter
+@Setter
+@NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(toBuilder = true)
 @EqualsAndHashCode

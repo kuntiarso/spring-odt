@@ -1,6 +1,5 @@
 package com.developer.superuser.tokenservice.signatureresource;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -18,7 +17,7 @@ public class SignatureController {
     private final SignatureHandler signatureHandler;
 
     @PostMapping("generate")
-    public ResponseEntity<?> generateSignature(@Valid @RequestBody SignatureRequestDto request) {
+    public ResponseEntity<?> generateSignature(@RequestBody SignatureRequestDto request) {
         log.info("request details --- {}", request);
         return signatureHandler.generateSignature(request);
     }

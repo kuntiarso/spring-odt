@@ -7,6 +7,7 @@ import com.developer.superuser.tokenservice.core.property.DokuConfigProperties;
 import com.developer.superuser.tokenservice.core.utility.HashingUtility;
 import com.developer.superuser.tokenservice.signature.Signature;
 import com.developer.superuser.tokenservice.signature.SignatureService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -49,16 +50,24 @@ public class SignatureHandler {
     }
 
     private Signature generateNonSnap(SignatureRequestDto request) throws NoSuchAlgorithmException, InvalidKeyException {
-        log.info("Checking incoming arguments");
-        signatureNonSnapValidator.execute(request);
-        log.info("Generating non-snap signature");
-        String rawMaterialSignature = signatureNonSnapBuilder.execute(request);
-        log.info("Raw material signature: {}", rawMaterialSignature);
-        String hashedInput = HashingUtility.hashWithHmacSha256(rawMaterialSignature, dokuConfigProperties.getSecretKey());
-        log.info("Saving non-snap signature details");
-        Signature signature = signatureCoreMapper.mapNonSnap(request, hashedInput);
-        signatureService.saveNonSnap(signature);
-        log.info("Signature details is saved successfully");
+        Signature signature;
+        try {
+            log.info("Checking incoming arguments");
+            signatureNonSnapValidator.execute(request);
+            log.info("Checking potential duplication of signature");
+            signature = signatureService.findSignature(request.getRequestId());
+            log.info("Similar signature is found and returned");
+        } catch (EntityNotFoundException ex) {
+            log.info("Signature not found, then generating new non-snap signature");
+            log.info("Generating non-snap signature");
+            String rawMaterialSignature = signatureNonSnapBuilder.execute(request);
+            log.info("Raw material signature: {}", rawMaterialSignature);
+            String hashedInput = HashingUtility.hashWithHmacSha256(rawMaterialSignature, dokuConfigProperties.getSecretKey());
+            log.info("Saving non-snap signature details");
+            signature = signatureCoreMapper.mapNonSnap(request, hashedInput);
+            signatureService.saveNonSnap(signature);
+            log.info("Signature details is saved successfully");
+        }
         return signature;
     }
 
