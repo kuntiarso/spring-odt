@@ -6,7 +6,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SignatureNonSnapBuilder implements GenericHelper<SignatureRequestDto, String> {
+public class NonSnapSignatureBuilder implements GenericHelper<SignatureRequestDto, String> {
     private static final String CLIENT_ID = "Client-Id";
     private static final String REQUEST_ID = "Request-Id";
     private static final String REQUEST_TIMESTAMP = "Request-Timestamp";
@@ -17,12 +17,13 @@ public class SignatureNonSnapBuilder implements GenericHelper<SignatureRequestDt
 
     @Override
     public String execute(SignatureRequestDto request) {
+        request.setTimestamp(DateUtility.getCurrentTimestamp());
         StringBuilder sb = new StringBuilder();
         sb.append(CLIENT_ID).append(COLON_SYMBOL).append(request.getClientId());
         sb.append(NEW_LINE);
         sb.append(REQUEST_ID).append(COLON_SYMBOL).append(request.getRequestId());
         sb.append(NEW_LINE);
-        sb.append(REQUEST_TIMESTAMP).append(COLON_SYMBOL).append(DateUtility.getCurrentTimestamp());
+        sb.append(REQUEST_TIMESTAMP).append(COLON_SYMBOL).append(request.getTimestamp());
         sb.append(NEW_LINE);
         sb.append(REQUEST_TARGET).append(COLON_SYMBOL).append(request.getTargetEndpoint());
         if (HttpMethod.POST.matches(request.getHttpMethod()) || HttpMethod.PUT.matches(request.getHttpMethod())) {

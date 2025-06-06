@@ -6,10 +6,11 @@ import com.google.common.base.Strings;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SignatureNonSnapValidator implements GenericHelper<SignatureRequestDto, Void> {
+public class NonSnapSignatureValidator implements GenericHelper<SignatureRequestDto, Void> {
     @Override
     public Void execute(SignatureRequestDto request) {
         Preconditions.checkNotNull(request, "request object cannot be null");
+        Preconditions.checkNotNull(request.getApiType(), "apiType cannot be null");
         Preconditions.checkState(!Strings.isNullOrEmpty(request.getClientId()), "clientId cannot be null or empty");
         Preconditions.checkState(!Strings.isNullOrEmpty(request.getRequestId()), "requestId cannot be null or empty");
         Preconditions.checkState(!Strings.isNullOrEmpty(request.getTargetEndpoint()), "targetEndpoint cannot be null or empty");

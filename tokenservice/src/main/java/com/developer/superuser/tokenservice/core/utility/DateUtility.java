@@ -4,12 +4,14 @@ import lombok.experimental.UtilityClass;
 
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 @UtilityClass
 public class DateUtility {
     public String getCurrentTimestamp() {
         Instant now = Instant.now();
-        return DateTimeFormatter.ISO_INSTANT.format(now);
+        Instant nowWithoutMillis = now.truncatedTo(ChronoUnit.SECONDS);
+        return DateTimeFormatter.ISO_INSTANT.format(nowWithoutMillis);
     }
 }

@@ -2,6 +2,7 @@ package com.developer.superuser.tokenservice.signatureresource;
 
 import com.developer.superuser.tokenservice.core.enumeration.ApiType;
 import com.developer.superuser.tokenservice.core.enumeration.SignatureType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 @Getter
@@ -21,4 +22,6 @@ public class SignatureRequestDto {
     private String targetEndpoint;
     @EqualsAndHashCode.Include
     private String digest;
+    @JsonIgnore
+    private String timestamp;
 }

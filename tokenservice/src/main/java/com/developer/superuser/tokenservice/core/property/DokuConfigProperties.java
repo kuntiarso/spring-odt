@@ -9,4 +9,23 @@ import org.springframework.stereotype.Component;
 @Data
 public class DokuConfigProperties {
     private String secretKey;
+    private Merchant merchant;
+
+    @Data
+    public static class Merchant {
+        private KeyStore keyStore;
+        private PrivateKey privateKey;
+    }
+
+    @Data
+    public static class KeyStore {
+        private String location;
+        private String alias;
+        private String password;
+    }
+
+    @Data
+    public static class PrivateKey {
+        private String passphrase;
+    }
 }
