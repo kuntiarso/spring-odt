@@ -3,6 +3,7 @@ package com.developer.superuser.tokenservice.signature;
 import com.developer.superuser.tokenservice.core.enumeration.ApiType;
 import com.developer.superuser.tokenservice.core.enumeration.SignatureType;
 import lombok.*;
+import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 
@@ -23,6 +24,8 @@ public class Signature {
     private String digest;
     private String stringToSign;
     private String signature;
+    private String timestamp;
+    private HttpStatus status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private String createdBy;

@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.Optional;
 
 public interface SignatureRepository extends JpaRepository<SignatureEntity, Long> {
-    @Query(value = TokenserviceConstant.FIND_BY_REQUEST_ID, nativeQuery = true)
+    @Query(value = TokenserviceConstant.QUERY_FIND_BY_REQUEST_ID, nativeQuery = true)
     Optional<SignatureEntity> findByRequestId(String requestId);
 }

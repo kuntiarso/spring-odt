@@ -12,4 +12,5 @@ import lombok.*;
 public class SignatureResponseDto {
     private String requestId;
     private String signature;
+    private String timestamp;
 }

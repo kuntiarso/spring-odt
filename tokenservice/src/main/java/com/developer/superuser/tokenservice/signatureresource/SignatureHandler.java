@@ -38,7 +38,7 @@ public class SignatureHandler {
             Signature signature;
             log.info("Differentiating signature generation by apiType and sigType");
             if (ApiType.BASIC.equals(request.getApiType())) {
-                log.info("Generating basic signature");
+                log.info("Coming to basic signature generation");
                 signature = generateBasicSignature(request);
             } else if (ApiType.NONSNAP.equals(request.getApiType())) {
                 log.info("Coming to non-snap signature generation");
@@ -50,10 +50,10 @@ public class SignatureHandler {
                 log.info("Coming to asymmetric signature generation");
                 throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, "Asymmetric signature generation failed");
             } else {
-                log.error("Unknown signature type => " + request.getSigType());
+                log.error("Unknown signature type --- {}", request.getSigType());
                 throw new UnsupportedOperationException("Unsupported signature type");
             }
-            return ResponseEntity.status(HttpStatus.CREATED).body(signatureCoreMapper.mapResponse(signature));
+            return ResponseEntity.status(signature.getStatus()).body(signatureCoreMapper.mapResponse(signature));
         } catch (Exception ex) {
             log.error("Error has occurred in generateSignature handler --- {}", ex.getMessage(), ex);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getLocalizedMessage());
@@ -61,23 +61,24 @@ public class SignatureHandler {
     }
 
     private Signature generateBasicSignature(SignatureRequestDto request) throws NoSuchAlgorithmException, SignatureException, InvalidKeyException {
-        log.info("Checking incoming arguments");
+        log.info("Checking incoming arguments for basic signature");
         basicSignatureValidator.execute(request);
         log.info("Generating basic signature");
         String stringToSign = basicSignatureBuilder.execute(request);
         log.info("Basic signature stringToSign: {}", stringToSign);
         String rsaSha256Signature = HashingUtility.withRsaSha256(stringToSign, merchantPrivateKey);
-        return Signature.builder().apiType(ApiType.BASIC).signature(rsaSha256Signature).build();
+        return signatureCoreMapper.mapBasic(request, rsaSha256Signature);
     }
 
     private Signature generateNonSnap(SignatureRequestDto request) throws NoSuchAlgorithmException, InvalidKeyException {
         Signature signature;
         try {
-            log.info("Checking incoming arguments");
+            log.info("Checking incoming arguments for non-snap signature");
             nonSnapSignatureValidator.execute(request);
             log.info("Checking potential duplication of signature");
             signature = signatureService.findSignature(request.getRequestId());
             log.info("Similar signature is found and returned");
+            signature.setStatus(HttpStatus.OK);
         } catch (EntityNotFoundException ex) {
             log.info("Signature not found, then generating new non-snap signature");
             String stringToSign = nonSnapSignatureBuilder.execute(request);
@@ -87,6 +88,7 @@ public class SignatureHandler {
             signature = signatureCoreMapper.mapNonSnap(request, hmacSha256Signature);
             signatureService.saveNonSnap(signature);
             log.info("Signature details is saved successfully");
+            signature.setStatus(HttpStatus.CREATED);
         }
         return signature;
     }

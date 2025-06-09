@@ -13,7 +13,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
-@Table(name = TokenserviceConstant.SIGNATURE_ENTITY)
+@Table(name = TokenserviceConstant.ENTITY_SIGNATURE)
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Getter
