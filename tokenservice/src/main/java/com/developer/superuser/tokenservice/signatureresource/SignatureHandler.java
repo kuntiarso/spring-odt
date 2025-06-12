@@ -1,5 +1,6 @@
 package com.developer.superuser.tokenservice.signatureresource;
 
+import com.developer.superuser.tokenservice.TokenserviceConstant;
 import com.developer.superuser.tokenservice.core.enumeration.ApiType;
 import com.developer.superuser.tokenservice.core.enumeration.SignatureType;
 import com.developer.superuser.tokenservice.core.helper.GenericHelper;
@@ -29,11 +30,15 @@ public class SignatureHandler {
     private final GenericHelper<SignatureRequestDto, String> basicSignatureBuilder;
     private final GenericHelper<SignatureRequestDto, Void> nonSnapSignatureValidator;
     private final GenericHelper<SignatureRequestDto, String> nonSnapSignatureBuilder;
+    private final GenericHelper<SignatureRequestDto, Void> symmetricSignatureValidator;
+    private final GenericHelper<SignatureRequestDto, String> symmetricSignatureBuilder;
+    private final GenericHelper<SignatureRequestDto, Void> asymmetricSignatureValidator;
+    private final GenericHelper<SignatureRequestDto, String> asymmetricSignatureBuilder;
     private final SignatureCoreMapper signatureCoreMapper;
     private final DokuConfigProperties dokuConfigProperties;
     private final PrivateKey merchantPrivateKey;
 
-    public ResponseEntity<SignatureResponseDto> generateSignature(SignatureRequestDto request) {
+    public ResponseEntity<SignatureResponseDto> getSign(SignatureRequestDto request) {
         try {
             Signature signature;
             log.info("Differentiating signature generation by apiType and sigType");
@@ -42,10 +47,10 @@ public class SignatureHandler {
                 signature = generateBasicSignature(request);
             } else if (ApiType.NONSNAP.equals(request.getApiType())) {
                 log.info("Coming to non-snap signature generation");
-                signature = generateNonSnap(request);
+                signature = generateNonSnapSignature(request);
             } else if (SignatureType.SYMMETRIC.equals(request.getSigType())) {
                 log.info("Coming to symmetric signature generation");
-                throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, "Symmetric signature generation failed");
+                signature = generateSymmetricSignature(request);
             } else if (SignatureType.ASYMMETRIC.equals(request.getSigType())) {
                 log.info("Coming to asymmetric signature generation");
                 throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, "Asymmetric signature generation failed");
@@ -60,6 +65,10 @@ public class SignatureHandler {
         }
     }
 
+    public String validateSign() {
+        return null;
+    }
+
     private Signature generateBasicSignature(SignatureRequestDto request) throws NoSuchAlgorithmException, SignatureException, InvalidKeyException {
         log.info("Checking incoming arguments for basic signature");
         basicSignatureValidator.execute(request);
@@ -67,33 +76,78 @@ public class SignatureHandler {
         String stringToSign = basicSignatureBuilder.execute(request);
         log.info("Basic signature stringToSign: {}", stringToSign);
         String rsaSha256Signature = HashingUtility.withRsaSha256(stringToSign, merchantPrivateKey);
-        return signatureCoreMapper.mapBasic(request, rsaSha256Signature);
+        Signature signature = signatureCoreMapper.mapBasic(request, stringToSign, rsaSha256Signature);
+        signature.setStatus(HttpStatus.OK);
+        log.info("Returning new basic signature");
+        return signature;
     }
 
-    private Signature generateNonSnap(SignatureRequestDto request) throws NoSuchAlgorithmException, InvalidKeyException {
+    private Signature generateNonSnapSignature(SignatureRequestDto request) throws NoSuchAlgorithmException, InvalidKeyException {
         Signature signature;
         try {
             log.info("Checking incoming arguments for non-snap signature");
             nonSnapSignatureValidator.execute(request);
-            log.info("Checking potential duplication of signature");
+            log.info("Checking duplication of non-snap signature");
             signature = signatureService.findSignature(request.getRequestId());
-            log.info("Similar signature is found and returned");
+            log.info("Returning existing non-snap signature");
             signature.setStatus(HttpStatus.OK);
         } catch (EntityNotFoundException ex) {
-            log.info("Signature not found, then generating new non-snap signature");
+            log.info("Signature not found, hence generating new non-snap signature");
             String stringToSign = nonSnapSignatureBuilder.execute(request);
-            log.info("Non snap signature stringToSign: {}", stringToSign);
-            String hmacSha256Signature = HashingUtility.withHmacSha256(stringToSign, dokuConfigProperties.getSecretKey());
-            log.info("Saving non-snap signature details");
-            signature = signatureCoreMapper.mapNonSnap(request, hmacSha256Signature);
+            log.info("Non-snap signature stringToSign: {}", stringToSign);
+            String hmacSha256Signature = HashingUtility.withHmacSha(stringToSign, dokuConfigProperties.getApi().getKey(), TokenserviceConstant.ALGORITHM_HMAC_SHA256);
+            log.info("Saving non-snap signature into db");
+            signature = signatureCoreMapper.mapNonSnap(request, stringToSign, hmacSha256Signature);
             signatureService.saveNonSnap(signature);
-            log.info("Signature details is saved successfully");
+            log.info("Successfully saved non-snap signature");
             signature.setStatus(HttpStatus.CREATED);
         }
         return signature;
     }
 
-    public String validateSignature() {
-        return null;
+    private Signature generateSymmetricSignature(SignatureRequestDto request) throws NoSuchAlgorithmException, InvalidKeyException {
+        Signature signature;
+        try {
+            log.info("Checking incoming arguments for symmetric signature");
+            symmetricSignatureValidator.execute(request);
+            log.info("Checking duplication of symmetric signature");
+            signature = signatureService.findSignature(request.getRequestId());
+            log.info("Returning existing symmetric signature");
+            signature.setStatus(HttpStatus.OK);
+        } catch (EntityNotFoundException ex) {
+            log.info("Signature not found, hence generating new symmetric signature");
+            String stringToSign = symmetricSignatureBuilder.execute(request);
+            log.info("Symmetric signature stringToSign: {}", stringToSign);
+            String hmacSha512Signature = HashingUtility.withHmacSha(stringToSign, dokuConfigProperties.getApi().getKey(), TokenserviceConstant.ALGORITHM_HMAC_SHA512);
+            log.info("Saving symmetric signature into db");
+            signature = signatureCoreMapper.mapSymmetric(request, stringToSign, hmacSha512Signature);
+            signatureService.saveSymmetric(signature);
+            log.info("Successfully saved symmetric signature");
+            signature.setStatus(HttpStatus.CREATED);
+        }
+        return signature;
+    }
+
+    private Signature generateAsymmetricSignature(SignatureRequestDto request) throws NoSuchAlgorithmException, SignatureException, InvalidKeyException {
+        Signature signature;
+        try {
+            log.info("Checking incoming arguments for asymmetric signature");
+            asymmetricSignatureValidator.execute(request);
+            log.info("Checking duplication of asymmetric signature");
+            signature = signatureService.findSignature(request.getRequestId());
+            log.info("Returning existing asymmetric signature");
+            signature.setStatus(HttpStatus.OK);
+        } catch (EntityNotFoundException ex) {
+            log.info("Signature not found, hence generating new asymmetric signature");
+            String stringToSign = asymmetricSignatureBuilder.execute(request);
+            log.info("Asymmetric signature stringToSign: {}", stringToSign);
+            String rsaSha256Signature = HashingUtility.withRsaSha256(stringToSign, merchantPrivateKey);
+            log.info("Saving asymmetric signature into db");
+            signature = signatureCoreMapper.mapAsymmetric(request, stringToSign, rsaSha256Signature);
+            signatureService.saveAsymmetric(signature);
+            log.info("Successfully saved asymmetric signature");
+            signature.setStatus(HttpStatus.CREATED);
+        }
+        return signature;
     }
 }

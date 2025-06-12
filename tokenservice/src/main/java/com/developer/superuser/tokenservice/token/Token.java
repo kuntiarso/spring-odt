@@ -6,16 +6,13 @@ import lombok.*;
 import java.io.Serial;
 import java.io.Serializable;
 
-@Getter
-@Setter
-@NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
 @Builder(toBuilder = true)
-@EqualsAndHashCode
-@ToString
+@Data
 public class Token implements Serializable {
     @Serial
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 3_458_815_117_668_012_404L;
     private String clientId;
     private String signature;
     private String timestamp;

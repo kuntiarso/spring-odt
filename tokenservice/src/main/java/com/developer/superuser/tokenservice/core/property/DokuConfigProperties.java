@@ -4,14 +4,14 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
+
 @Component
-@ConfigurationProperties(prefix = "doku.api")
+@ConfigurationProperties(prefix = "doku")
 @Data
 public class DokuConfigProperties {
-    private String secretKey;
-    private String baseUrl;
     private Merchant merchant;
-    private Endpoint endpoint;
+    private Api api;
 
     @Data
     public static class Merchant {
@@ -32,7 +32,9 @@ public class DokuConfigProperties {
     }
 
     @Data
-    public static class Endpoint {
-        private String accessToken;
+    public static class Api {
+        private String key;
+        private String baseUrl;
+        private Map<String, String> endpoint;
     }
 }

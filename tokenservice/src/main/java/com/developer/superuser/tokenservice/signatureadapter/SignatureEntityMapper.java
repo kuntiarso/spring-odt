@@ -14,6 +14,7 @@ public class SignatureEntityMapper {
                 .apiType(ApiType.NONSNAP)
                 .requestId(signature.getRequestId())
                 .targetEndpoint(signature.getTargetEndpoint())
+                .stringToSign(signature.getStringToSign())
                 .digest(signature.getDigest())
                 .signature(signature.getSignature())
                 .build();

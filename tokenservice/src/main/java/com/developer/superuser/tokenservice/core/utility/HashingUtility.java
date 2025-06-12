@@ -11,12 +11,12 @@ import java.util.Base64;
 
 @UtilityClass
 public class HashingUtility {
-    public String withHmacSha256(String input, String secret) throws NoSuchAlgorithmException, InvalidKeyException {
+    public String withHmacSha(String input, String secret, String algorithm) throws NoSuchAlgorithmException, InvalidKeyException {
         byte[] secretBytes = secret.getBytes(StandardCharsets.UTF_8);
-        SecretKeySpec signingKey = new SecretKeySpec(secretBytes, 0, secretBytes.length, TokenserviceConstant.ALGORITHM_HMAC_SHA256);
-        Mac hmacSha256Signature = Mac.getInstance(TokenserviceConstant.ALGORITHM_HMAC_SHA256);
-        hmacSha256Signature.init(signingKey);
-        byte[] signatureBytes = hmacSha256Signature.doFinal(input.getBytes(StandardCharsets.UTF_8));
+        SecretKeySpec signingKey = new SecretKeySpec(secretBytes, 0, secretBytes.length, algorithm);
+        Mac hmacSha = Mac.getInstance(algorithm);
+        hmacSha.init(signingKey);
+        byte[] signatureBytes = hmacSha.doFinal(input.getBytes(StandardCharsets.UTF_8));
         return Base64.getEncoder().encodeToString(signatureBytes);
     }
 

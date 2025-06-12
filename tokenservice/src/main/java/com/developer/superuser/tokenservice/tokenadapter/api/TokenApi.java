@@ -22,7 +22,7 @@ public class TokenApi {
         Map<String, Object> body = Map.of("grantType", token.getGrantType());
         log.info("Printing fetchB2b request body --- {}", body);
         return dokuRestClient.post()
-                .uri(dokuConfigProperties.getEndpoint().getAccessToken(), token.getDokuTokenType().label)
+                .uri(dokuConfigProperties.getApi().getEndpoint().get("access-token"), token.getDokuTokenType().label)
                 .header(TokenserviceConstant.HEADER_CLIENT_KEY, token.getClientId())
                 .header(TokenserviceConstant.HEADER_SIGNATURE, token.getSignature())
                 .header(TokenserviceConstant.HEADER_TIMESTAMP, token.getTimestamp())

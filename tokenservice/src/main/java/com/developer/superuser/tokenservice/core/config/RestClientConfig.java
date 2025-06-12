@@ -16,7 +16,7 @@ public class RestClientConfig {
     @Bean
     public RestClient dokuRestClient(DokuConfigProperties dokuConfigProperties) {
         return RestClient.builder()
-                .baseUrl(dokuConfigProperties.getBaseUrl())
+                .baseUrl(dokuConfigProperties.getApi().getBaseUrl())
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .requestInterceptor(((request, body, execution) -> {
                     log.info("DokuRestClient request URI --- {}", request.getURI());

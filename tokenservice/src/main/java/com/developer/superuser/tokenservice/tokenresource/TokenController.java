@@ -17,7 +17,7 @@ public class TokenController {
 
     @PostMapping("access")
     public ResponseEntity<?> getAccessToken(@RequestBody TokenRequestDto request) {
-        log.info("request details for getAccessToken --- {}", request);
+        log.info("Request details for getAccessToken --- {}", request);
         return ResponseEntity.ok(tokenHandler.getAccessToken(request));
     }
 }

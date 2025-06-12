@@ -18,8 +18,8 @@ public class SignatureController {
 
     @PostMapping("generate")
     public ResponseEntity<?> generateSignature(@RequestBody SignatureRequestDto request) {
-        log.info("request details --- {}", request);
-        return ResponseEntity.ok(signatureHandler.generateSignature(request));
+        log.info("Request details for generateSignature --- {}", request);
+        return ResponseEntity.ok(signatureHandler.getSign(request));
     }
 
     @PostMapping(value = "validate", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)

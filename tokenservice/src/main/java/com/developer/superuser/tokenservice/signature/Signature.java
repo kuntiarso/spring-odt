@@ -1,6 +1,7 @@
 package com.developer.superuser.tokenservice.signature;
 
 import com.developer.superuser.tokenservice.core.enumeration.ApiType;
+import com.developer.superuser.tokenservice.core.enumeration.GrantType;
 import com.developer.superuser.tokenservice.core.enumeration.SignatureType;
 import lombok.*;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,10 @@ public class Signature {
     private String requestId;
     private String httpMethod;
     private String targetEndpoint;
+    private String tokenB2b;
+    private GrantType grantType;
+    private String authCode;
+    private String refreshToken;
     private String digest;
     private String stringToSign;
     private String signature;
