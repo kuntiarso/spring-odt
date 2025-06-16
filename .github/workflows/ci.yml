@@ -1,4 +1,4 @@
-name: Build and Push Common Service to GHCR
+name: Build and Push Token Service to GHCR
 
 on:
   push:
@@ -7,6 +7,7 @@ on:
     paths:
       - '.github/**'
       - 'tokenservice/**'
+      - 'virtualaccountservice/**'
 
 jobs:
   build-and-push:
@@ -14,9 +15,11 @@ jobs:
     permissions:
       packages: write
       contents: read
-    env:
-      WORKING_DIR: tokenservice
-      PACKAGE_NAME: spring-odt-tokenservice
+    strategy:
+      matrix:
+        service:
+          - tokenservice
+          - virtualaccountservice
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -31,29 +34,58 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('tokenservice/pom.xml') }}
+          key: ${{ runner.os }}-maven-${{ hashFiles(format('{0}/pom.xml', matrix.service)) }}
           restore-keys: ${{ runner.os }}-maven-
 
+      - name: Configure maven settings.xml
+        run: |
+          mkdir -p ~/.m2
+          cat <<EOF > ~/.m2/settings.xml
+          <settings>
+            <servers>
+              <server>
+                <id>github</id>
+                <username>${{ github.repository_owner }}</username>
+                <password>${{ secrets.GH_PACKAGE_PAT }}</password>
+              </server>
+            </servers>
+          </settings>
+          EOF
+
+      - name: Check for change in ${{ matrix.service }}
+        id: service_change_check
+        run: |
+          if git diff --quiet HEAD^ HEAD -- '${{ matrix.service }}/'; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
       - name: Build service jar
-        working-directory: ${{ env.WORKING_DIR }}
+        if: steps.service_change_check.outputs.changed == 'true'
+        working-directory: ${{ matrix.service }}
         run: ./mvnw clean install -DskipTests
 
-      - name: Login to GitHub Container Registry
-        run: echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      - name: Login to GHCR
+        if: steps.service_change_check.outputs.changed == 'true'
+        run: echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
 
       - name: Build and push image to GHCR
+        if: steps.service_change_check.outputs.changed == 'true'
         env:
-          IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/${{ env.PACKAGE_NAME }}
+          IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/spring-odt-${{ matrix.service }}
+          TAG: ${GITHUB_SHA::8}
         run: |
-          TAG=${GITHUB_SHA::8}
-          docker build -t ${{ env.IMAGE_NAME }}:$TAG ${{ env.WORKING_DIR }}/
-          docker push ${{ env.IMAGE_NAME }}:$TAG
-          docker tag ${{ env.IMAGE_NAME }}:$TAG ${{ env.IMAGE_NAME }}:latest
+          docker build -t ${{ env.IMAGE_NAME }}:${{ env.TAG }} ${{ matrix.service }}/
+          docker push ${{ env.IMAGE_NAME }}:${{ env.TAG }}
+          docker tag ${{ env.IMAGE_NAME }}:${{ env.TAG }} ${{ env.IMAGE_NAME }}:latest
           docker push ${{ env.IMAGE_NAME }}:latest
 
       - name: Cleanup old GHCR tags
+        if: steps.service_change_check.outputs.changed == 'true'
+        env:
+          PACKAGE_NAME: spring-odt-${{ matrix.service }}
         run: |
-          # Single-line jq command to avoid shell quoting issues
           PACKAGE_IDS=$(curl -s \
             -H "Authorization: Bearer ${{ secrets.GHCR_PAT }}" \
             -H "Accept: application/vnd.github.v3+json" \
