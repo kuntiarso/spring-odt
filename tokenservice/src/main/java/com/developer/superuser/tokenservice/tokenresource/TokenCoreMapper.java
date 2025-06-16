@@ -7,24 +7,24 @@ import org.springframework.stereotype.Component;
 public class TokenCoreMapper {
     public Token map(TokenRequestDto request) {
         return Token.builder()
-                .clientId(request.getClientId())
-                .signature(request.getSignature())
-                .grantType(request.getGrantType().label)
-                .timestamp(request.getTimestamp())
+                .setClientId(request.getClientId())
+                .setSignature(request.getSignature())
+                .setGrantType(request.getGrantType().label)
+                .setTimestamp(request.getTimestamp())
                 .build();
     }
 
     public TokenResponseDto mapResponse(Token token) {
         return TokenResponseDto.builder()
-                .responseCode(token.getResponseCode())
-                .responseMessage(token.getResponseMessage())
-                .tokenType(token.getTokenType())
-                .accessToken(token.getAccessToken())
-                .accessTokenExpiryTime(token.getAccessTokenExpiryTime())
-                .refreshToken(token.getRefreshToken())
-                .refreshTokenExpiryTime(token.getRefreshTokenExpiryTime())
-                .expiresIn(token.getExpiresIn())
-                .additionalInfo(token.getAdditionalInfo())
+                .setResponseCode(token.getResponseCode())
+                .setResponseMessage(token.getResponseMessage())
+                .setTokenType(token.getTokenType())
+                .setAccessToken(token.getAccessToken())
+                .setAccessTokenExpiryTime(token.getAccessTokenExpiryTime())
+                .setRefreshToken(token.getRefreshToken())
+                .setRefreshTokenExpiryTime(token.getRefreshTokenExpiryTime())
+                .setExpiresIn(token.getExpiresIn())
+                .setAdditionalInfo(token.getAdditionalInfo())
                 .build();
     }
 }

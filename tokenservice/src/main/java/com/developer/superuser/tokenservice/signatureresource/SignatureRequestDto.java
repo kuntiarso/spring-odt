@@ -10,20 +10,17 @@ import org.springframework.http.HttpMethod;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder(toBuilder = true)
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Builder(toBuilder = true, setterPrefix = "set")
+@EqualsAndHashCode
 @ToString
 public class SignatureRequestDto {
     private ApiType apiType;
     private SignatureType sigType;
     private String clientId;
-    @EqualsAndHashCode.Include
     private String requestId;
     private HttpMethod httpMethod;
     private String targetEndpoint;
-    @EqualsAndHashCode.Include
     private String tokenB2b;
-    @EqualsAndHashCode.Include
     private String digest;
     @JsonIgnore
     private String timestamp;

@@ -9,60 +9,60 @@ import org.springframework.stereotype.Component;
 public class SignatureCoreMapper {
     public Signature mapBasic(SignatureRequestDto request, String stringToSign, String signature) {
         return Signature.builder()
-                .apiType(ApiType.BASIC)
-                .stringToSign(stringToSign)
-                .signature(signature)
-                .timestamp(request.getTimestamp())
+                .setApiType(ApiType.BASIC)
+                .setStringToSign(stringToSign)
+                .setSignature(signature)
+                .setTimestamp(request.getTimestamp())
                 .build();
     }
 
     public Signature mapNonSnap(SignatureRequestDto request, String stringToSign, String signature) {
         return Signature.builder()
-                .apiType(ApiType.NONSNAP)
-                .requestId(request.getRequestId())
-                .httpMethod(request.getHttpMethod().name())
-                .targetEndpoint(request.getTargetEndpoint())
-                .digest(request.getDigest())
-                .stringToSign(stringToSign)
-                .signature("HMACSHA256=".concat(signature))
-                .timestamp(request.getTimestamp())
+                .setApiType(ApiType.NONSNAP)
+                .setRequestId(request.getRequestId())
+                .setHttpMethod(request.getHttpMethod().name())
+                .setTargetEndpoint(request.getTargetEndpoint())
+                .setDigest(request.getDigest())
+                .setStringToSign(stringToSign)
+                .setSignature("HMACSHA256=".concat(signature))
+                .setTimestamp(request.getTimestamp())
                 .build();
     }
 
     public Signature mapSymmetric(SignatureRequestDto request, String stringToSign, String signature) {
         return Signature.builder()
-                .apiType(ApiType.SNAP)
-                .sigType(SignatureType.SYMMETRIC)
-                .requestId(request.getRequestId())
-                .httpMethod(request.getHttpMethod().name())
-                .targetEndpoint(request.getTargetEndpoint())
-                .tokenB2b(request.getTokenB2b())
-                .digest(request.getDigest())
-                .stringToSign(stringToSign)
-                .signature(signature)
-                .timestamp(request.getTimestamp())
+                .setApiType(ApiType.SNAP)
+                .setSigType(SignatureType.SYMMETRIC)
+                .setRequestId(request.getRequestId())
+                .setHttpMethod(request.getHttpMethod().name())
+                .setTargetEndpoint(request.getTargetEndpoint())
+                .setTokenB2b(request.getTokenB2b())
+                .setDigest(request.getDigest())
+                .setStringToSign(stringToSign)
+                .setSignature(signature)
+                .setTimestamp(request.getTimestamp())
                 .build();
     }
 
     public Signature mapAsymmetric(SignatureRequestDto request, String stringToSign, String signature) {
         return Signature.builder()
-                .apiType(ApiType.SNAP)
-                .sigType(SignatureType.ASYMMETRIC)
-                .requestId(request.getRequestId())
-                .httpMethod(request.getHttpMethod().name())
-                .targetEndpoint(request.getTargetEndpoint())
-                .digest(request.getDigest())
-                .stringToSign(stringToSign)
-                .signature(signature)
-                .timestamp(request.getTimestamp())
+                .setApiType(ApiType.SNAP)
+                .setSigType(SignatureType.ASYMMETRIC)
+                .setRequestId(request.getRequestId())
+                .setHttpMethod(request.getHttpMethod().name())
+                .setTargetEndpoint(request.getTargetEndpoint())
+                .setDigest(request.getDigest())
+                .setStringToSign(stringToSign)
+                .setSignature(signature)
+                .setTimestamp(request.getTimestamp())
                 .build();
     }
 
     public SignatureResponseDto mapResponse(Signature signature) {
         return SignatureResponseDto.builder()
-                .requestId(signature.getRequestId())
-                .signature(signature.getSignature())
-                .timestamp(signature.getTimestamp())
+                .setRequestId(signature.getRequestId())
+                .setSignature(signature.getSignature())
+                .setTimestamp(signature.getTimestamp())
                 .build();
     }
 }

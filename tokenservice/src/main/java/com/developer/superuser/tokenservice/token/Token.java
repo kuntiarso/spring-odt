@@ -2,14 +2,18 @@ package com.developer.superuser.tokenservice.token;
 
 import com.developer.superuser.tokenservice.core.enumeration.TokenType;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.io.Serial;
 import java.io.Serializable;
 
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Getter
+@Setter
 @NoArgsConstructor
-@Builder(toBuilder = true)
-@Data
+@AllArgsConstructor
+@SuperBuilder(toBuilder = true, setterPrefix = "set")
+@EqualsAndHashCode(callSuper = false)
+@ToString(callSuper = true)
 public class Token implements Serializable {
     @Serial
     private static final long serialVersionUID = 3_458_815_117_668_012_404L;
@@ -19,7 +23,6 @@ public class Token implements Serializable {
     private TokenType dokuTokenType;
     private String grantType;
     private String authCode;
-    // ****************************
     private String responseCode;
     private String responseMessage;
     private String tokenType;

@@ -1,21 +1,26 @@
 package com.developer.superuser.tokenservice.signature;
 
+import com.developer.superuser.shared.audit.StandardAuditable;
 import com.developer.superuser.tokenservice.core.enumeration.ApiType;
 import com.developer.superuser.tokenservice.core.enumeration.GrantType;
 import com.developer.superuser.tokenservice.core.enumeration.SignatureType;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.springframework.http.HttpStatus;
 
-import java.time.LocalDateTime;
+import java.io.Serial;
+import java.io.Serializable;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder(toBuilder = true)
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@ToString
-public class Signature {
+@AllArgsConstructor
+@SuperBuilder(toBuilder = true, setterPrefix = "set")
+@EqualsAndHashCode(callSuper = false)
+@ToString(callSuper = true)
+public class Signature extends StandardAuditable implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 5_077_897_682_293_664_067L;
     private Long id;
     private ApiType apiType;
     private SignatureType sigType;
@@ -31,8 +36,4 @@ public class Signature {
     private String signature;
     private String timestamp;
     private HttpStatus status;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    private String createdBy;
-    private String updatedBy;
 }
