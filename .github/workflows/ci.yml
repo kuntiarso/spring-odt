@@ -47,10 +47,6 @@ jobs:
             echo "result=true" >> $GITHUB_OUTPUT
           fi
 
-      - name: Remove cached shared-library dependency
-        if: steps.service_change.outputs.result == 'true'
-        run: ./mvnw dependency:purge-local-repository -DmanualInclude="com.developer.superuser:shared-library:1.0.0" -DreResolve=true
-
       - name: Configure maven settings.xml
         if: steps.service_change.outputs.result == 'true'
         run: |
@@ -80,7 +76,9 @@ jobs:
       - name: Build service jar
         if: steps.service_change.outputs.result == 'true'
         working-directory: ${{ matrix.service }}
-        run: ./mvnw clean install -DskipTests
+        run: |
+          ./mvnw dependency:purge-local-repository -DmanualInclude="com.developer.superuser:shared-library:1.0.0" -DreResolve=true
+          ./mvnw clean install -DskipTests
 
       - name: Login to GHCR
         if: steps.service_change.outputs.result == 'true'
