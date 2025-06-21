@@ -1,7 +1,10 @@
 package com.developer.superuser.virtualaccountservice.core.config;
 
+import com.developer.superuser.virtualaccountservice.vapayment.DefaultVaApiServiceAdapter;
 import com.developer.superuser.virtualaccountservice.vapayment.DefaultVaPersistenceServiceAdapter;
+import com.developer.superuser.virtualaccountservice.vapayment.VaApiService;
 import com.developer.superuser.virtualaccountservice.vapayment.VaPersistenceService;
+import com.developer.superuser.virtualaccountservice.vapaymentadapter.api.VaApiServiceAdapter;
 import com.developer.superuser.virtualaccountservice.vapaymentadapter.db.VaPaymentDetailEntityMapper;
 import com.developer.superuser.virtualaccountservice.vapaymentadapter.db.VaPersistenceServiceAdapter;
 import com.developer.superuser.virtualaccountservice.vapaymentadapter.db.VaRepository;
@@ -20,5 +23,16 @@ public class AdapterConfig {
     @ConditionalOnMissingBean(VaPersistenceService.class)
     public VaPersistenceService defaultVaPersistenceService() {
         return new DefaultVaPersistenceServiceAdapter();
+    }
+
+    @Bean
+    public VaApiService vaApiService() {
+        return new VaApiServiceAdapter();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(VaApiService.class)
+    public VaApiService defaultVaApiService() {
+        return new DefaultVaApiServiceAdapter();
     }
 }
