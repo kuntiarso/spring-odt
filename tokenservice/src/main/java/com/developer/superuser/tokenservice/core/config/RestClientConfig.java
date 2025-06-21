@@ -2,7 +2,6 @@ package com.developer.superuser.tokenservice.core.config;
 
 import com.developer.superuser.tokenservice.core.property.DokuConfigProperties;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -10,13 +9,12 @@ import org.springframework.http.MediaType;
 import org.springframework.web.client.RestClient;
 
 @Configuration
-@EnableConfigurationProperties(DokuConfigProperties.class)
 @Slf4j
 public class RestClientConfig {
     @Bean
-    public RestClient dokuRestClient(DokuConfigProperties dokuConfigProperties) {
+    public RestClient dokuRestClient(DokuConfigProperties dokuConfig) {
         return RestClient.builder()
-                .baseUrl(dokuConfigProperties.getApi().getBaseUrl())
+                .baseUrl(dokuConfig.getApi().getBaseUrl())
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .requestInterceptor(((request, body, execution) -> {
                     log.info("DokuRestClient request URI --- {}", request.getURI());

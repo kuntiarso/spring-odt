@@ -35,7 +35,7 @@ public class SignatureHandler {
     private final GenericHelper<SignatureRequestDto, Void> asymmetricSignatureValidator;
     private final GenericHelper<SignatureRequestDto, String> asymmetricSignatureBuilder;
     private final SignatureCoreMapper signatureCoreMapper;
-    private final DokuConfigProperties dokuConfigProperties;
+    private final DokuConfigProperties dokuConfig;
     private final PrivateKey merchantPrivateKey;
 
     public ResponseEntity<SignatureResponseDto> getSign(SignatureRequestDto request) {
@@ -95,7 +95,7 @@ public class SignatureHandler {
             log.info("Signature not found, hence generating new non-snap signature");
             String stringToSign = nonSnapSignatureBuilder.execute(request);
             log.info("Non-snap signature stringToSign: {}", stringToSign);
-            String hmacSha256Signature = HashingUtility.withHmacSha(stringToSign, dokuConfigProperties.getApi().getKey(), TokenserviceConstant.ALGORITHM_HMAC_SHA256);
+            String hmacSha256Signature = HashingUtility.withHmacSha(stringToSign, dokuConfig.getApi().getKey(), TokenserviceConstant.ALGORITHM_HMAC_SHA256);
             log.info("Saving non-snap signature into db");
             signature = signatureCoreMapper.mapNonSnap(request, stringToSign, hmacSha256Signature);
             signatureService.saveNonSnap(signature);
@@ -118,7 +118,7 @@ public class SignatureHandler {
             log.info("Signature not found, hence generating new symmetric signature");
             String stringToSign = symmetricSignatureBuilder.execute(request);
             log.info("Symmetric signature stringToSign: {}", stringToSign);
-            String hmacSha512Signature = HashingUtility.withHmacSha(stringToSign, dokuConfigProperties.getApi().getKey(), TokenserviceConstant.ALGORITHM_HMAC_SHA512);
+            String hmacSha512Signature = HashingUtility.withHmacSha(stringToSign, dokuConfig.getApi().getKey(), TokenserviceConstant.ALGORITHM_HMAC_SHA512);
             log.info("Saving symmetric signature into db");
             signature = signatureCoreMapper.mapSymmetric(request, stringToSign, hmacSha512Signature);
             signatureService.saveSymmetric(signature);

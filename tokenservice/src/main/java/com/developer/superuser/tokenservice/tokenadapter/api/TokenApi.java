@@ -15,14 +15,14 @@ import java.util.Map;
 @Slf4j
 public class TokenApi {
     private final RestClient dokuRestClient;
-    private final DokuConfigProperties dokuConfigProperties;
+    private final DokuConfigProperties dokuConfig;
 
     public Token fetchB2b(Token token) {
         log.info("Building fetchB2b request body");
         Map<String, Object> body = Map.of("grantType", token.getGrantType());
         log.info("Printing fetchB2b request body --- {}", body);
         return dokuRestClient.post()
-                .uri(dokuConfigProperties.getApi().getEndpoint().get("access-token"), token.getDokuTokenType().label)
+                .uri(dokuConfig.getApi().getEndpoint().get("access-token"), token.getDokuTokenType().label)
                 .header(TokenserviceConstant.HEADER_CLIENT_KEY, token.getClientId())
                 .header(TokenserviceConstant.HEADER_SIGNATURE, token.getSignature())
                 .header(TokenserviceConstant.HEADER_TIMESTAMP, token.getTimestamp())
