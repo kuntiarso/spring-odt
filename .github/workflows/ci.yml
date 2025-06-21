@@ -6,8 +6,9 @@ on:
       - main
     paths:
       - '.github/**'
-      - 'tokenservice/**'
-      - 'virtualaccountservice/**'
+      - 'token-service/**'
+      - 'virtual-account-service/**'
+      - 'payment-service/**'
 
 jobs:
   build-and-push:
@@ -18,8 +19,8 @@ jobs:
     strategy:
       matrix:
         service:
-          - tokenservice
-          - virtualaccountservice
+          - token-service
+          - virtual-account-service
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -37,7 +38,17 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles(format('{0}/pom.xml', matrix.service)) }}
           restore-keys: ${{ runner.os }}-maven-
 
+      - name: Check for change in ${{ matrix.service }}
+        id: service_change
+        run: |
+          if git diff --quiet HEAD^ HEAD -- '${{ matrix.service }}/'; then
+            echo "result=false" >> $GITHUB_OUTPUT
+          else
+            echo "result=true" >> $GITHUB_OUTPUT
+          fi
+
       - name: Configure maven settings.xml
+        if: steps.service_change.outputs.result == 'true'
         run: |
           mkdir -p ~/.m2
           cat <<EOF > ~/.m2/settings.xml
@@ -52,28 +63,29 @@ jobs:
           </settings>
           EOF
 
-      - name: Check for change in ${{ matrix.service }}
-        id: service_change_check
+      - name: Setup service name
+        id: service_name
+        if: steps.service_change.outputs.result == 'true'
         run: |
-          if git diff --quiet HEAD^ HEAD -- '${{ matrix.service }}/'; then
-            echo "changed=false" >> $GITHUB_OUTPUT
-          else
-            echo "changed=true" >> $GITHUB_OUTPUT
-          fi
+          original_name="${{ matrix.service }}"
+          echo "original service name: ${original_name}"
+          trimmed_name="${original_name//-/}"
+          echo "trimmed service name: ${trimmed_name}"
+          echo "result=$trimmed_name" >> $GITHUB_OUTPUT
 
       - name: Build service jar
-        if: steps.service_change_check.outputs.changed == 'true'
+        if: steps.service_change.outputs.result == 'true'
         working-directory: ${{ matrix.service }}
         run: ./mvnw clean install -DskipTests
 
       - name: Login to GHCR
-        if: steps.service_change_check.outputs.changed == 'true'
+        if: steps.service_change.outputs.result == 'true'
         run: echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
 
       - name: Build and push image to GHCR
-        if: steps.service_change_check.outputs.changed == 'true'
+        if: steps.service_change.outputs.result == 'true'
         env:
-          IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/spring-odt-${{ matrix.service }}
+          IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/spring-odt-${{ steps.service_name.outputs.result }}
           TAG: ${GITHUB_SHA::8}
         run: |
           docker build -t ${{ env.IMAGE_NAME }}:${{ env.TAG }} ${{ matrix.service }}/
@@ -82,14 +94,14 @@ jobs:
           docker push ${{ env.IMAGE_NAME }}:latest
 
       - name: Cleanup old GHCR tags
-        if: steps.service_change_check.outputs.changed == 'true'
+        if: steps.service_change.outputs.result == 'true'
         env:
-          PACKAGE_NAME: spring-odt-${{ matrix.service }}
+          IMAGE_NAME: spring-odt-${{ steps.service_name.outputs.result }}
         run: |
           PACKAGE_IDS=$(curl -s \
             -H "Authorization: Bearer ${{ secrets.GHCR_PAT }}" \
             -H "Accept: application/vnd.github.v3+json" \
-            "https://api.github.com/users/${{ github.repository_owner }}/packages/container/${{ env.PACKAGE_NAME }}/versions" \
+            "https://api.github.com/users/${{ github.repository_owner }}/packages/container/${{ env.IMAGE_NAME }}/versions" \
             | jq -r --arg tag "${GITHUB_SHA::8}" '[.[] | select(.metadata.container.tags != null) | select((.metadata.container.tags | index("latest") | not) and (.metadata.container.tags | index($tag) | not)) | .id] | join(" ")')
 
           if [ -n "${PACKAGE_IDS}" ]; then
@@ -97,7 +109,7 @@ jobs:
             for id in ${PACKAGE_IDS}; do
               curl -X DELETE \
                 -H "Authorization: Bearer ${{ secrets.GHCR_PAT }}" \
-                "https://api.github.com/users/${{ github.repository_owner }}/packages/container/${{ env.PACKAGE_NAME }}/versions/${id}" \
+                "https://api.github.com/users/${{ github.repository_owner }}/packages/container/${{ env.IMAGE_NAME }}/versions/${id}" \
                 || echo "Failed to delete ${id}"
             done
           else
