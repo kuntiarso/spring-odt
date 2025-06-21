@@ -21,6 +21,7 @@ jobs:
         service:
           - token-service
           - virtual-account-service
+          - payment-service
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
