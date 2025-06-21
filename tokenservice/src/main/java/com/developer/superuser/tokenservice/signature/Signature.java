@@ -8,9 +8,6 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.http.HttpStatus;
 
-import java.io.Serial;
-import java.io.Serializable;
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,9 +15,7 @@ import java.io.Serializable;
 @SuperBuilder(toBuilder = true, setterPrefix = "set")
 @EqualsAndHashCode(callSuper = false)
 @ToString(callSuper = true)
-public class Signature extends StandardAuditable implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 5_077_897_682_293_664_067L;
+public class Signature extends StandardAuditable {
     private Long id;
     private ApiType apiType;
     private SignatureType sigType;

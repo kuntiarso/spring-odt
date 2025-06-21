@@ -23,6 +23,7 @@ public class Token implements Serializable {
     private TokenType dokuTokenType;
     private String grantType;
     private String authCode;
+
     private String responseCode;
     private String responseMessage;
     private String tokenType;
