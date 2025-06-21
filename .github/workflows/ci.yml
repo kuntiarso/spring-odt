@@ -1,4 +1,4 @@
-name: Build and Push Token Service to GHCR
+name: Build and Push Spring ODT Services to GHCR
 
 on:
   push:
