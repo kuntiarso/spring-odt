@@ -1,6 +1,10 @@
 package com.developer.superuser.paymentservice.core.config;
 
 import com.developer.superuser.paymentservice.core.helper.OptionalOrElseThrow;
+import com.developer.superuser.paymentservice.payment.PaymentPersistenceService;
+import com.developer.superuser.paymentservice.paymentadapter.PaymentEntityMapper;
+import com.developer.superuser.paymentservice.paymentadapter.PaymentPersistenceServiceAdapter;
+import com.developer.superuser.paymentservice.paymentadapter.PaymentRepository;
 import com.developer.superuser.paymentservice.tokensvc.TokenSvcApiService;
 import com.developer.superuser.paymentservice.tokensvcadapter.TokenSvcApi;
 import com.developer.superuser.paymentservice.tokensvcadapter.TokenSvcApiServiceAdapter;
@@ -21,5 +25,10 @@ public class AdapterConfig {
     @Bean
     public VaSvcApiService vaSvcApiService(VaSvcApi vaSvcApi, OptionalOrElseThrow<JsonNode> optionalOrElseThrow) {
         return new VaSvcApiServiceAdapter(vaSvcApi, optionalOrElseThrow);
+    }
+
+    @Bean
+    public PaymentPersistenceService paymentPersistenceService(PaymentRepository paymentRepository, PaymentEntityMapper paymentEntityMapper) {
+        return new PaymentPersistenceServiceAdapter(paymentRepository, paymentEntityMapper);
     }
 }

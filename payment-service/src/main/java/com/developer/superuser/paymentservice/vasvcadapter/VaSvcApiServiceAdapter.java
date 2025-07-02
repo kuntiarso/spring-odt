@@ -2,7 +2,6 @@ package com.developer.superuser.paymentservice.vasvcadapter;
 
 import com.developer.superuser.paymentservice.core.helper.OptionalOrElseThrow;
 import com.developer.superuser.paymentservice.vasvc.VaSvcApiService;
-import com.developer.superuser.shared.data.ResponseData;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,8 +15,6 @@ public class VaSvcApiServiceAdapter implements VaSvcApiService {
     @Override
     public JsonNode createVa(JsonNode request) {
         log.info("Calling va-service api for creating va");
-        ResponseData<JsonNode> responseData = optionalOrElseThrow.execute(vaSvcApi.createVa(request));
-        log.info("Response from va-service api for creating va --- {}", responseData.toString());
-        return responseData.getBody();
+        return optionalOrElseThrow.execute(vaSvcApi.createVa(request)).getBody();
     }
 }
