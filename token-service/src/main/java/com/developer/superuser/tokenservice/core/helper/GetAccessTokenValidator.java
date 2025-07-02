@@ -9,12 +9,12 @@ import org.springframework.stereotype.Component;
 public class GetAccessTokenValidator implements GenericHelper<TokenRequestDto, Void> {
     @Override
     public Void execute(TokenRequestDto request) {
-        Preconditions.checkNotNull(request, "request object cannot be null");
-        Preconditions.checkNotNull(request.getDokuTokenType(), "dokuTokenType cannot be null");
-        Preconditions.checkNotNull(request.getGrantType(), "grantType cannot be null");
-        Preconditions.checkArgument(!Strings.isNullOrEmpty(request.getClientId()), "clientId cannot be null or empty");
-        Preconditions.checkArgument(!Strings.isNullOrEmpty(request.getSignature()), "signature cannot be null or empty");
-        Preconditions.checkArgument(!Strings.isNullOrEmpty(request.getTimestamp()), "timestamp cannot be null or empty");
+        Preconditions.checkNotNull(request, "request must not be null");
+        Preconditions.checkNotNull(request.getDokuTokenType(), "dokuTokenType must not be null");
+        Preconditions.checkNotNull(request.getGrantType(), "grantType must not be null");
+        Preconditions.checkArgument(!Strings.isNullOrEmpty(request.getClientId()), "clientId must not be null or empty");
+        Preconditions.checkArgument(!Strings.isNullOrEmpty(request.getSignature()), "signature must not be null or empty");
+        Preconditions.checkArgument(!Strings.isNullOrEmpty(request.getTimestamp()), "timestamp must not be null or empty");
         return null;
     }
 }

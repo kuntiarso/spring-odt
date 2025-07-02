@@ -1,6 +1,6 @@
 package com.developer.superuser.tokenservice.core.enumeration;
 
-public enum SignatureType {
+public enum AlgoType {
     SYMMETRIC,
     ASYMMETRIC,
 }

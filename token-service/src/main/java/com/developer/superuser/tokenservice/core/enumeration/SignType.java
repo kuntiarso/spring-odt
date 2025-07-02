@@ -1,6 +1,6 @@
 package com.developer.superuser.tokenservice.core.enumeration;
 
-public enum ApiType {
+public enum SignType {
     BASIC,
     SNAP,
     NONSNAP

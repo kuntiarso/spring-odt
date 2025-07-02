@@ -1,11 +1,11 @@
 package com.developer.superuser.tokenservice.signatureresource;
 
 import com.developer.superuser.tokenservice.TokenServiceConstant;
-import com.developer.superuser.tokenservice.core.enumeration.ApiType;
-import com.developer.superuser.tokenservice.core.enumeration.SignatureType;
+import com.developer.superuser.tokenservice.core.enumeration.SignType;
+import com.developer.superuser.tokenservice.core.enumeration.AlgoType;
 import com.developer.superuser.tokenservice.core.helper.GenericHelper;
 import com.developer.superuser.tokenservice.core.property.DokuConfigProperties;
-import com.developer.superuser.tokenservice.core.utility.HashingUtility;
+import com.developer.superuser.tokenservice.core.utility.HashingUtil;
 import com.developer.superuser.tokenservice.signature.Signature;
 import com.developer.superuser.tokenservice.signature.SignatureService;
 import jakarta.persistence.EntityNotFoundException;
@@ -42,16 +42,16 @@ public class SignatureHandler {
         try {
             Signature signature;
             log.info("Differentiating signature generation by apiType and sigType");
-            if (ApiType.BASIC.equals(request.getApiType())) {
+            if (SignType.BASIC.equals(request.getSignType())) {
                 log.info("Coming to basic signature generation");
                 signature = generateBasicSignature(request);
-            } else if (ApiType.NONSNAP.equals(request.getApiType())) {
+            } else if (SignType.NONSNAP.equals(request.getSignType())) {
                 log.info("Coming to non-snap signature generation");
                 signature = generateNonSnapSignature(request);
-            } else if (SignatureType.SYMMETRIC.equals(request.getSigType())) {
+            } else if (AlgoType.SYMMETRIC.equals(request.getSigType())) {
                 log.info("Coming to symmetric signature generation");
                 signature = generateSymmetricSignature(request);
-            } else if (SignatureType.ASYMMETRIC.equals(request.getSigType())) {
+            } else if (AlgoType.ASYMMETRIC.equals(request.getSigType())) {
                 log.info("Coming to asymmetric signature generation");
                 throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, "Asymmetric signature generation failed");
             } else {
@@ -75,7 +75,7 @@ public class SignatureHandler {
         log.info("Generating basic signature");
         String stringToSign = basicSignatureBuilder.execute(request);
         log.info("Basic signature stringToSign: {}", stringToSign);
-        String rsaSha256Signature = HashingUtility.withRsaSha256(stringToSign, merchantPrivateKey);
+        String rsaSha256Signature = HashingUtil.withRsaSha256(stringToSign, merchantPrivateKey);
         Signature signature = signatureCoreMapper.mapBasic(request, stringToSign, rsaSha256Signature);
         signature.setStatus(HttpStatus.OK);
         log.info("Returning new basic signature");
@@ -95,7 +95,7 @@ public class SignatureHandler {
             log.info("Signature not found, hence generating new non-snap signature");
             String stringToSign = nonSnapSignatureBuilder.execute(request);
             log.info("Non-snap signature stringToSign: {}", stringToSign);
-            String hmacSha256Signature = HashingUtility.withHmacSha(stringToSign, dokuConfig.getApi().getKey(), TokenServiceConstant.ALGORITHM_HMAC_SHA256);
+            String hmacSha256Signature = HashingUtil.withHmacSha(stringToSign, dokuConfig.getApi().getKey(), TokenServiceConstant.ALGORITHM_HMAC_SHA256);
             log.info("Saving non-snap signature into db");
             signature = signatureCoreMapper.mapNonSnap(request, stringToSign, hmacSha256Signature);
             signatureService.saveNonSnap(signature);
@@ -118,7 +118,7 @@ public class SignatureHandler {
             log.info("Signature not found, hence generating new symmetric signature");
             String stringToSign = symmetricSignatureBuilder.execute(request);
             log.info("Symmetric signature stringToSign: {}", stringToSign);
-            String hmacSha512Signature = HashingUtility.withHmacSha(stringToSign, dokuConfig.getApi().getKey(), TokenServiceConstant.ALGORITHM_HMAC_SHA512);
+            String hmacSha512Signature = HashingUtil.withHmacSha(stringToSign, dokuConfig.getApi().getKey(), TokenServiceConstant.ALGORITHM_HMAC_SHA512);
             log.info("Saving symmetric signature into db");
             signature = signatureCoreMapper.mapSymmetric(request, stringToSign, hmacSha512Signature);
             signatureService.saveSymmetric(signature);
@@ -141,7 +141,7 @@ public class SignatureHandler {
             log.info("Signature not found, hence generating new asymmetric signature");
             String stringToSign = asymmetricSignatureBuilder.execute(request);
             log.info("Asymmetric signature stringToSign: {}", stringToSign);
-            String rsaSha256Signature = HashingUtility.withRsaSha256(stringToSign, merchantPrivateKey);
+            String rsaSha256Signature = HashingUtil.withRsaSha256(stringToSign, merchantPrivateKey);
             log.info("Saving asymmetric signature into db");
             signature = signatureCoreMapper.mapAsymmetric(request, stringToSign, rsaSha256Signature);
             signatureService.saveAsymmetric(signature);

@@ -9,9 +9,9 @@ import org.springframework.stereotype.Component;
 public class BasicSignatureValidator implements GenericHelper<SignatureRequestDto, Void> {
     @Override
     public Void execute(SignatureRequestDto request) {
-        Preconditions.checkNotNull(request, "request body cannot be null");
-        Preconditions.checkNotNull(request.getApiType(), "apiType cannot be null");
-        Preconditions.checkState(!Strings.isNullOrEmpty(request.getClientId()), "clientId cannot be null or empty");
+        Preconditions.checkNotNull(request, "request must not be null");
+        Preconditions.checkNotNull(request.getSignType(), "signType must not be null");
+        Preconditions.checkState(!Strings.isNullOrEmpty(request.getClientId()), "clientId must not be null or empty");
         return null;
     }
 }

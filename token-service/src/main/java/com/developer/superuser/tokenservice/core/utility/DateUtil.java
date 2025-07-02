@@ -8,7 +8,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 @UtilityClass
-public class DateUtility {
+public class DateUtil {
     public String getCurrentTimestamp() {
         ZoneId asiaJakartaZone = ZoneId.of(TokenServiceConstant.DATE_TIME_ZONE);
         ZonedDateTime currentDateTime = ZonedDateTime.now(asiaJakartaZone);

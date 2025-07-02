@@ -1,7 +1,7 @@
 package com.developer.superuser.tokenservice.core.helper;
 
 import com.developer.superuser.tokenservice.TokenServiceConstant;
-import com.developer.superuser.tokenservice.core.utility.DateUtility;
+import com.developer.superuser.tokenservice.core.utility.DateUtil;
 import com.developer.superuser.tokenservice.signatureresource.SignatureRequestDto;
 import org.springframework.stereotype.Component;
 
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class SymmetricSignatureBuilder implements GenericHelper<SignatureRequestDto, String> {
     @Override
     public String execute(SignatureRequestDto request) {
-        request.setTimestamp(DateUtility.getCurrentTimestamp());
+        request.setTimestamp(DateUtil.getCurrentTimestamp());
         StringBuilder sb = new StringBuilder();
         sb.append(request.getHttpMethod().name());
         sb.append(TokenServiceConstant.SYMBOL_COLON);

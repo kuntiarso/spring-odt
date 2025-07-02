@@ -1,7 +1,7 @@
 package com.developer.superuser.tokenservice.signatureadapter;
 
-import com.developer.superuser.tokenservice.core.enumeration.ApiType;
-import com.developer.superuser.tokenservice.core.enumeration.SignatureType;
+import com.developer.superuser.tokenservice.core.enumeration.SignType;
+import com.developer.superuser.tokenservice.core.enumeration.AlgoType;
 import com.developer.superuser.tokenservice.signature.Signature;
 import org.springframework.stereotype.Component;
 
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class SignatureEntityMapper {
     public SignatureEntity toEntityNonSnap(Signature signature) {
         return SignatureEntity.builder()
-                .setApiType(ApiType.NONSNAP)
+                .setSignType(SignType.NONSNAP)
                 .setRequestId(signature.getRequestId())
                 .setTargetEndpoint(signature.getTargetEndpoint())
                 .setStringToSign(signature.getStringToSign())
@@ -20,8 +20,8 @@ public class SignatureEntityMapper {
 
     public SignatureEntity toEntitySymmetric(Signature signature) {
         return SignatureEntity.builder()
-                .setApiType(ApiType.SNAP)
-                .setSigType(SignatureType.SYMMETRIC)
+                .setSignType(SignType.SNAP)
+                .setAlgoType(AlgoType.SYMMETRIC)
                 .setRequestId(signature.getRequestId())
                 .setHttpMethod(signature.getHttpMethod())
                 .setHttpMethod(signature.getTargetEndpoint())
@@ -32,8 +32,8 @@ public class SignatureEntityMapper {
 
     public SignatureEntity toEntityAsymmetric(Signature signature) {
         return SignatureEntity.builder()
-                .setApiType(ApiType.SNAP)
-                .setSigType(SignatureType.ASYMMETRIC)
+                .setSignType(SignType.SNAP)
+                .setAlgoType(AlgoType.ASYMMETRIC)
                 .setRequestId(signature.getRequestId())
                 .setHttpMethod(signature.getHttpMethod())
                 .setTargetEndpoint(signature.getTargetEndpoint())
@@ -45,8 +45,8 @@ public class SignatureEntityMapper {
     public Signature toSignature(SignatureEntity entity) {
         return Signature.builder()
                 .setId(entity.getId())
-                .setApiType(entity.getApiType())
-                .setSigType(entity.getSigType())
+                .setSignType(entity.getSignType())
+                .setAlgoType(entity.getAlgoType())
                 .setRequestId(entity.getRequestId())
                 .setHttpMethod(entity.getHttpMethod())
                 .setTargetEndpoint(entity.getTargetEndpoint())

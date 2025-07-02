@@ -1,7 +1,7 @@
 package com.developer.superuser.tokenservice.signatureresource;
 
-import com.developer.superuser.tokenservice.core.enumeration.ApiType;
-import com.developer.superuser.tokenservice.core.enumeration.SignatureType;
+import com.developer.superuser.tokenservice.core.enumeration.SignType;
+import com.developer.superuser.tokenservice.core.enumeration.AlgoType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.springframework.http.HttpMethod;
@@ -14,8 +14,8 @@ import org.springframework.http.HttpMethod;
 @EqualsAndHashCode
 @ToString
 public class SignatureRequestDto {
-    private ApiType apiType;
-    private SignatureType sigType;
+    private SignType signType;
+    private AlgoType algoType;
     private String clientId;
     private String requestId;
     private HttpMethod httpMethod;

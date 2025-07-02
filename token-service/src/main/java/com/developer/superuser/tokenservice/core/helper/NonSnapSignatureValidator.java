@@ -9,13 +9,13 @@ import org.springframework.stereotype.Component;
 public class NonSnapSignatureValidator implements GenericHelper<SignatureRequestDto, Void> {
     @Override
     public Void execute(SignatureRequestDto request) {
-        Preconditions.checkNotNull(request, "request body cannot be null");
-        Preconditions.checkNotNull(request.getApiType(), "apiType cannot be null");
-        Preconditions.checkState(!Strings.isNullOrEmpty(request.getRequestId()), "requestId cannot be null or empty");
-        Preconditions.checkState(!Strings.isNullOrEmpty(request.getClientId()), "clientId cannot be null or empty");
-        Preconditions.checkNotNull(request.getHttpMethod(), "httpMethod cannot be null");
-        Preconditions.checkState(!Strings.isNullOrEmpty(request.getTargetEndpoint()), "targetEndpoint cannot be null or empty");
-        Preconditions.checkState(!Strings.isNullOrEmpty(request.getDigest()), "digest cannot be null or empty");
+        Preconditions.checkNotNull(request, "request must not be null");
+        Preconditions.checkNotNull(request.getSignType(), "signType must not be null");
+        Preconditions.checkState(!Strings.isNullOrEmpty(request.getRequestId()), "requestId must not be null or empty");
+        Preconditions.checkState(!Strings.isNullOrEmpty(request.getClientId()), "clientId must not be null or empty");
+        Preconditions.checkNotNull(request.getHttpMethod(), "httpMethod must not be null");
+        Preconditions.checkState(!Strings.isNullOrEmpty(request.getTargetEndpoint()), "targetEndpoint must not be null or empty");
+        Preconditions.checkState(!Strings.isNullOrEmpty(request.getDigest()), "digest must not be null or empty");
         return null;
     }
 }

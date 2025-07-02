@@ -2,8 +2,8 @@ package com.developer.superuser.tokenservice.signatureadapter;
 
 import com.developer.superuser.shared.audit.StandardAuditableEntity;
 import com.developer.superuser.tokenservice.TokenServiceConstant;
-import com.developer.superuser.tokenservice.core.enumeration.ApiType;
-import com.developer.superuser.tokenservice.core.enumeration.SignatureType;
+import com.developer.superuser.tokenservice.core.enumeration.SignType;
+import com.developer.superuser.tokenservice.core.enumeration.AlgoType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -28,11 +28,11 @@ public class SignatureEntity extends StandardAuditableEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "sign_type", nullable = false, length = 10)
-    private ApiType apiType;
+    private SignType signType;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "algo_type", length = 10)
-    private SignatureType sigType;
+    private AlgoType algoType;
 
     @Column(name = "http_method", length = 6)
     private String httpMethod;

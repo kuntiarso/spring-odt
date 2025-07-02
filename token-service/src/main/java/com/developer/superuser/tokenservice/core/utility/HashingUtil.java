@@ -10,7 +10,7 @@ import java.security.*;
 import java.util.Base64;
 
 @UtilityClass
-public class HashingUtility {
+public class HashingUtil {
     public String withHmacSha(String input, String secret, String algorithm) throws NoSuchAlgorithmException, InvalidKeyException {
         byte[] secretBytes = secret.getBytes(StandardCharsets.UTF_8);
         SecretKeySpec signingKey = new SecretKeySpec(secretBytes, 0, secretBytes.length, algorithm);

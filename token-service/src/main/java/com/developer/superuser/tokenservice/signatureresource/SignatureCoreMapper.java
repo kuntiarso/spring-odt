@@ -1,7 +1,7 @@
 package com.developer.superuser.tokenservice.signatureresource;
 
-import com.developer.superuser.tokenservice.core.enumeration.ApiType;
-import com.developer.superuser.tokenservice.core.enumeration.SignatureType;
+import com.developer.superuser.tokenservice.core.enumeration.SignType;
+import com.developer.superuser.tokenservice.core.enumeration.AlgoType;
 import com.developer.superuser.tokenservice.signature.Signature;
 import org.springframework.stereotype.Component;
 
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class SignatureCoreMapper {
     public Signature mapBasic(SignatureRequestDto request, String stringToSign, String signature) {
         return Signature.builder()
-                .setApiType(ApiType.BASIC)
+                .setSignType(SignType.BASIC)
                 .setStringToSign(stringToSign)
                 .setSignature(signature)
                 .setTimestamp(request.getTimestamp())
@@ -18,7 +18,7 @@ public class SignatureCoreMapper {
 
     public Signature mapNonSnap(SignatureRequestDto request, String stringToSign, String signature) {
         return Signature.builder()
-                .setApiType(ApiType.NONSNAP)
+                .setSignType(SignType.NONSNAP)
                 .setRequestId(request.getRequestId())
                 .setHttpMethod(request.getHttpMethod().name())
                 .setTargetEndpoint(request.getTargetEndpoint())
@@ -31,8 +31,8 @@ public class SignatureCoreMapper {
 
     public Signature mapSymmetric(SignatureRequestDto request, String stringToSign, String signature) {
         return Signature.builder()
-                .setApiType(ApiType.SNAP)
-                .setSigType(SignatureType.SYMMETRIC)
+                .setSignType(SignType.SNAP)
+                .setAlgoType(AlgoType.SYMMETRIC)
                 .setRequestId(request.getRequestId())
                 .setHttpMethod(request.getHttpMethod().name())
                 .setTargetEndpoint(request.getTargetEndpoint())
@@ -46,8 +46,8 @@ public class SignatureCoreMapper {
 
     public Signature mapAsymmetric(SignatureRequestDto request, String stringToSign, String signature) {
         return Signature.builder()
-                .setApiType(ApiType.SNAP)
-                .setSigType(SignatureType.ASYMMETRIC)
+                .setSignType(SignType.SNAP)
+                .setAlgoType(AlgoType.ASYMMETRIC)
                 .setRequestId(request.getRequestId())
                 .setHttpMethod(request.getHttpMethod().name())
                 .setTargetEndpoint(request.getTargetEndpoint())

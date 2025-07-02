@@ -1,9 +1,9 @@
 package com.developer.superuser.tokenservice.signature;
 
 import com.developer.superuser.shared.audit.StandardAuditable;
-import com.developer.superuser.tokenservice.core.enumeration.ApiType;
+import com.developer.superuser.tokenservice.core.enumeration.SignType;
 import com.developer.superuser.tokenservice.core.enumeration.GrantType;
-import com.developer.superuser.tokenservice.core.enumeration.SignatureType;
+import com.developer.superuser.tokenservice.core.enumeration.AlgoType;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.http.HttpStatus;
@@ -18,8 +18,8 @@ import org.springframework.http.HttpStatus;
 public class Signature extends StandardAuditable {
     private Long id;
     private String requestId;
-    private ApiType apiType;
-    private SignatureType sigType;
+    private SignType signType;
+    private AlgoType algoType;
     private String httpMethod;
     private String targetEndpoint;
     private String tokenB2b;
