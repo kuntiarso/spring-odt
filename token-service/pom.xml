@@ -42,14 +42,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-mysql</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>com.developer.superuser</groupId>
@@ -111,21 +103,6 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.flywaydb</groupId>
-                <artifactId>flyway-maven-plugin</artifactId>
-                <configuration>
-                    <url>jdbc:mysql://localhost:3306/appodt</url>
-                    <user>${db.username}</user>
-                    <password>${db.password}</password>
-                    <schemas>
-                        <schema>appodt</schema>
-                    </schemas>
-                    <locations>
-                        <location>classpath:db</location>
-                    </locations>
                 </configuration>
             </plugin>
         </plugins>

@@ -17,9 +17,9 @@ import org.springframework.http.HttpStatus;
 @ToString(callSuper = true)
 public class Signature extends StandardAuditable {
     private Long id;
+    private String requestId;
     private ApiType apiType;
     private SignatureType sigType;
-    private String requestId;
     private String httpMethod;
     private String targetEndpoint;
     private String tokenB2b;

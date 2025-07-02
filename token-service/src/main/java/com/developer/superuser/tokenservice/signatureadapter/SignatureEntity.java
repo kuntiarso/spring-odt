@@ -23,16 +23,16 @@ public class SignatureEntity extends StandardAuditableEntity {
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "request_id", nullable = false, unique = true, length = 50)
+    private String requestId;
+
     @Enumerated(EnumType.STRING)
-    @Column(name = "api_type", nullable = false, length = 10)
+    @Column(name = "sign_type", nullable = false, length = 10)
     private ApiType apiType;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "signature_type", length = 10)
+    @Column(name = "algo_type", length = 10)
     private SignatureType sigType;
-
-    @Column(name = "request_id", nullable = false, unique = true, length = 50)
-    private String requestId;
 
     @Column(name = "http_method", length = 6)
     private String httpMethod;
