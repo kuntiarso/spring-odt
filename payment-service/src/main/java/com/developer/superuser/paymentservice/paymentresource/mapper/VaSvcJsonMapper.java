@@ -2,6 +2,7 @@ package com.developer.superuser.paymentservice.paymentresource.mapper;
 
 import com.developer.superuser.paymentservice.core.dto.AdditionalDto;
 import com.developer.superuser.paymentservice.core.dto.AmountDto;
+import com.developer.superuser.paymentservice.core.property.DokuConfigProperties;
 import com.developer.superuser.paymentservice.payment.Payment;
 import com.developer.superuser.paymentservice.paymentresource.dto.PaymentVaRequest;
 import com.developer.superuser.paymentservice.paymentresource.dto.PaymentVaResponse;
@@ -17,8 +18,14 @@ import java.time.Instant;
 @RequiredArgsConstructor
 public class VaSvcJsonMapper {
     private final ObjectMapper mapper;
+    private final DokuConfigProperties dokuConfig;
 
-    public JsonNode toVaJsonRequest(PaymentVaRequest request, Payment payment) {
+    public JsonNode toVaJsonRequest(PaymentVaRequest request, Payment payment, JsonNode tokenResponse) {
+        ObjectNode header = mapper.createObjectNode()
+                .put("timestamp", Instant.now().toString())
+                .put("clientId", dokuConfig.getMerchant().getClientId())
+                .put("requestId", payment.getRequestId())
+                .put("token", tokenResponse.path("accessToken").asText(null));
         ObjectNode body = mapper.createObjectNode()
                 .put("paymentId", payment.getId())
                 .put("partnerId", request.getPartnerId())

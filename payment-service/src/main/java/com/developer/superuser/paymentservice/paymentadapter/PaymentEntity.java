@@ -32,6 +32,9 @@ public class PaymentEntity extends StandardAuditableEntity {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
+    @Column(name = "request_id", nullable = false, unique = true)
+    private String requestId;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false)
     private PaymentType type;

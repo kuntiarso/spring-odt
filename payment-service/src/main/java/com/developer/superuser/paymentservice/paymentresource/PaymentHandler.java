@@ -16,7 +16,6 @@ import com.google.common.base.Strings;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -49,7 +48,7 @@ public class PaymentHandler {
             payment = paymentCoreMapper.toPaymentCore(request);
             payment = paymentPersistenceService.create(payment);
             log.info("Successfully created payment");
-            JsonNode vaRequest = vaSvcJsonMapper.toVaJsonRequest(request, payment);
+            JsonNode vaRequest = vaSvcJsonMapper.toVaJsonRequest(request, payment, tokenResponse);
             vaResponse = vaSvcApiService.createVa(vaRequest);
             log.info("Printing va response --- {}", vaResponse.toString());
             payment.setStatus(PaymentStatus.AWAITING_PAYMENT);

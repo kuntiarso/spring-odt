@@ -24,6 +24,7 @@ public class Payment extends StandardAuditable {
     private Long id;
     private Long orderId;
     private Long userId;
+    private String requestId;
     private PaymentType type;
     private String gateway;
     private AmountData amount;

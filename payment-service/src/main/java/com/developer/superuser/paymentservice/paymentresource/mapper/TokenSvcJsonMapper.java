@@ -16,7 +16,7 @@ public class TokenSvcJsonMapper {
     public JsonNode toSignJsonRequest(String signType) {
         if (PaymentServiceConstant.SIGN_TYPE_BASIC.equalsIgnoreCase(signType)) {
             return mapper.createObjectNode()
-                    .put("apiType", PaymentServiceConstant.SIGN_TYPE_BASIC)
+                    .put("signType", PaymentServiceConstant.SIGN_TYPE_BASIC)
                     .put("clientId", dokuConfig.getMerchant().getClientId());
         }
         return mapper.createObjectNode();
@@ -24,7 +24,7 @@ public class TokenSvcJsonMapper {
 
     public JsonNode toTokenJsonRequest(JsonNode signJsonResponse) {
         return mapper.createObjectNode()
-                .put("dokuTokenType", "B2B")
+                .put("tokenType", "B2B")
                 .put("clientId", dokuConfig.getMerchant().getClientId())
                 .put("signature", signJsonResponse.path("signature").asText(""))
                 .put("grantType", "CLIENT_CREDENTIALS")
