@@ -16,7 +16,11 @@ public class TokenCacheServiceAdapter implements TokenCacheService {
     private final TokenApiService tokenApiService;
 
     @Override
-    @Cacheable(value = TokenServiceConstant.CACHE_TOKEN_B2B, key = "#token.clientId")
+    @Cacheable(
+            value = TokenServiceConstant.CACHE_TOKEN_B2B,
+            key = "#token.clientId",
+            unless = "#result.error != null"
+    )
     public Token getOrFetchTokenB2b(Token token) {
         log.info("Cache is not available for token b2b, then fetching from doku api");
         return tokenApiService.fetchTokenB2b(token);
@@ -29,8 +33,8 @@ public class TokenCacheServiceAdapter implements TokenCacheService {
     }
 
     @Override
-    public boolean isTokenB2bValid(Token token) {
-        log.info("Validating token b2b");
-        return token != null && !Strings.isNullOrEmpty(token.getAccessToken());
+    public boolean isTokenValid(Token token) {
+        log.info("Validating token");
+        return token != null && token.getError() == null && !Strings.isNullOrEmpty(token.getAccessToken());
     }
 }

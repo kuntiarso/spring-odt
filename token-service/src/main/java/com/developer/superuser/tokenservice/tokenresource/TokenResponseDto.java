@@ -1,7 +1,10 @@
 package com.developer.superuser.tokenservice.tokenresource;
 
+import com.developer.superuser.tokenservice.core.data.ErrorData;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
+
+import java.time.Instant;
 
 @Getter
 @Setter
@@ -12,13 +15,12 @@ import lombok.*;
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TokenResponseDto {
-    private String responseCode;
-    private String responseMessage;
-    private String tokenType;
+    private String tokenScheme;
     private String accessToken;
-    private String accessTokenExpiryTime;
+    private Instant accessTokenExpiryTime;
     private String refreshToken;
-    private String refreshTokenExpiryTime;
-    private int expiresIn;
+    private Instant refreshTokenExpiryTime;
+    private Integer expiresIn;
     private String additionalInfo;
+    private ErrorData error;
 }

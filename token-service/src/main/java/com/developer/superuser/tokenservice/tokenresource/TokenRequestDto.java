@@ -4,6 +4,8 @@ import com.developer.superuser.tokenservice.core.enumeration.GrantType;
 import com.developer.superuser.tokenservice.core.enumeration.TokenType;
 import lombok.*;
 
+import java.time.Instant;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -12,9 +14,9 @@ import lombok.*;
 @EqualsAndHashCode
 @ToString
 public class TokenRequestDto {
-    private TokenType dokuTokenType;
     private String clientId;
-    private String signature;
+    private TokenType tokenType;
     private GrantType grantType;
-    private String timestamp;
+    private Instant timestamp;
+    private String signature;
 }

@@ -16,9 +16,7 @@ public class TokenCoreMapper {
 
     public TokenResponseDto mapResponse(Token token) {
         return TokenResponseDto.builder()
-                .setResponseCode(token.getResponseCode())
-                .setResponseMessage(token.getResponseMessage())
-                .setTokenType(token.getTokenType())
+                .setTokenScheme(token.getTokenScheme())
                 .setAccessToken(token.getAccessToken())
                 .setAccessTokenExpiryTime(token.getAccessTokenExpiryTime())
                 .setRefreshToken(token.getRefreshToken())

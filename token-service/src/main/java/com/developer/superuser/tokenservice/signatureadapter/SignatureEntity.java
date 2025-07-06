@@ -7,6 +7,7 @@ import com.developer.superuser.tokenservice.core.enumeration.AlgoType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.springframework.http.HttpMethod;
 
 @Table(name = TokenServiceConstant.ENTITY_SIGNATURE)
 @Entity
@@ -23,7 +24,7 @@ public class SignatureEntity extends StandardAuditableEntity {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "request_id", nullable = false, unique = true, length = 50)
+    @Column(name = "request_id", nullable = false, unique = true, length = 14)
     private String requestId;
 
     @Enumerated(EnumType.STRING)
@@ -40,9 +41,11 @@ public class SignatureEntity extends StandardAuditableEntity {
     @Column(name = "target_endpoint")
     private String targetEndpoint;
 
+    @Lob
     @Column(name = "digest", columnDefinition = "TEXT")
     private String digest;
 
+    @Lob
     @Column(name = "string_to_sign", columnDefinition = "TEXT")
     private String stringToSign;
 

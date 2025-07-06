@@ -15,11 +15,9 @@ public class TokenApiServiceAdapter implements TokenApiService {
 
     @Override
     public Token fetchTokenB2b(Token token) {
-        log.info("Calling doku api for fetchTokenB2b");
-        token.setDokuTokenType(TokenType.B2B);
-        Token responseToken = tokenApi.fetchB2b(token);
-        log.info("Response from doku api for fetchTokenB2b --- {}", responseToken);
-        return responseToken;
+        Token tokenResponse = tokenApi.fetchB2b(token);
+        log.info("Printing token response from doku api --- {}", tokenResponse);
+        return tokenResponse;
     }
 
     @Override

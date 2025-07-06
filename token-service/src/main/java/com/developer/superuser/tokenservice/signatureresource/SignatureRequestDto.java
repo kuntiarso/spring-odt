@@ -1,10 +1,13 @@
 package com.developer.superuser.tokenservice.signatureresource;
 
-import com.developer.superuser.tokenservice.core.enumeration.SignType;
+import com.developer.superuser.shared.utility.Dates;
 import com.developer.superuser.tokenservice.core.enumeration.AlgoType;
+import com.developer.superuser.tokenservice.core.enumeration.SignType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.springframework.http.HttpMethod;
+
+import java.time.Instant;
 
 @Getter
 @Setter
@@ -20,8 +23,8 @@ public class SignatureRequestDto {
     private String requestId;
     private HttpMethod httpMethod;
     private String targetEndpoint;
-    private String tokenB2b;
+    private String token;
     private String digest;
     @JsonIgnore
-    private String timestamp;
+    private Instant timestamp = Dates.now();
 }

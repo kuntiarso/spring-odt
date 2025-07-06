@@ -1,11 +1,15 @@
 package com.developer.superuser.tokenservice.token;
 
+import com.developer.superuser.tokenservice.core.data.ErrorData;
 import com.developer.superuser.tokenservice.core.enumeration.TokenType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.Instant;
 
 @Getter
 @Setter
@@ -19,18 +23,18 @@ public class Token implements Serializable {
     private static final long serialVersionUID = 3_458_815_117_668_012_404L;
     private String clientId;
     private String signature;
-    private String timestamp;
-    private TokenType dokuTokenType;
+    private Instant timestamp;
+    @JsonIgnore
+    private TokenType tokenType;
     private String grantType;
     private String authCode;
-
-    private String responseCode;
-    private String responseMessage;
-    private String tokenType;
+    @JsonProperty("tokenType")
+    private String tokenScheme;
     private String accessToken;
-    private String accessTokenExpiryTime;
+    private Instant accessTokenExpiryTime;
     private String refreshToken;
-    private String refreshTokenExpiryTime;
-    private int expiresIn;
+    private Instant refreshTokenExpiryTime;
+    private Integer expiresIn;
     private String additionalInfo;
+    private ErrorData error;
 }
