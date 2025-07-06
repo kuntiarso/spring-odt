@@ -32,14 +32,14 @@ public class PaymentEntity extends StandardAuditableEntity {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    @Column(name = "request_id", nullable = false, unique = true)
+    @Column(name = "request_id", nullable = false, unique = true, length = 14)
     private String requestId;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "type", nullable = false)
+    @Column(name = "type", nullable = false, length = 20)
     private PaymentType type;
 
-    @Column(name = "gateway", nullable = false)
+    @Column(name = "gateway", nullable = false, length = 10)
     private String gateway;
 
     @Embedded
@@ -50,13 +50,14 @@ public class PaymentEntity extends StandardAuditableEntity {
     private Amount amount;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
+    @Column(name = "status", length = 16)
     private PaymentStatus status;
 
-    @Column(name = "error_code")
+    @Column(name = "error_code", length = 10)
     private String errorCode;
 
-    @Column(name = "error_message")
+    @Lob
+    @Column(name = "error_message", columnDefinition = "TEXT")
     private String errorMessage;
 
     @Column(name = "paid_at")

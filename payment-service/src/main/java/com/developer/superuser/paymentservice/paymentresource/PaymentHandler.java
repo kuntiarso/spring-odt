@@ -16,6 +16,7 @@ import com.google.common.base.Strings;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -53,16 +54,16 @@ public class PaymentHandler {
             log.info("Printing va response --- {}", vaResponse.toString());
             payment.setStatus(PaymentStatus.AWAITING_PAYMENT);
         } catch (ResponseStatusException rse) {
-            log.error("Reasoned error has occurred");
+            log.error("Reasoned error has occurred while creating payment va");
             faultReason = rse.getReason();
             String[] error = Strings.nullToEmpty(faultReason).split(":");
             payment.setStatus(PaymentStatus.FAILED);
             payment.setErrorCode(error[0]);
             payment.setErrorMessage(error[1]);
         } catch (Exception ex) {
-            log.error("General error has occurred");
+            log.error("Unknown error has occurred while creating payment va", ex);
             faultReason = ex.getLocalizedMessage();
-            payment.setErrorCode("500");
+            payment.setErrorCode(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()));
             payment.setErrorMessage(faultReason);
         } finally {
             payment = paymentPersistenceService.update(payment);
