@@ -84,7 +84,7 @@ public class SignatureHandler {
         } catch (EntityNotFoundException ex) {
             String stringToSign = nonSnapSignatureHelper.build(request);
             log.info("Non-snap signature stringToSign --- {}", stringToSign);
-            String hmacSha256Signature = HashingUtil.withHmacSha(stringToSign, dokuConfig.getApi().getKey(), TokenServiceConstant.ALGORITHM_HMAC_SHA256);
+            String hmacSha256Signature = HashingUtil.withHmacSha(stringToSign, apiKey, TokenServiceConstant.ALGORITHM_HMAC_SHA256);
             signature = signatureCoreMapper.mapNonSnap(request, stringToSign, hmacSha256Signature);
             signatureService.saveNonSnap(signature);
         }
@@ -102,7 +102,7 @@ public class SignatureHandler {
         } catch (EntityNotFoundException ex) {
             String stringToSign = symmetricSignatureHelper.build(request);
             log.info("Symmetric signature stringToSign --- {}", stringToSign);
-            String hmacSha512Signature = HashingUtil.withHmacSha(stringToSign, dokuConfig.getApi().getKey(), TokenServiceConstant.ALGORITHM_HMAC_SHA512);
+            String hmacSha512Signature = HashingUtil.withHmacSha(stringToSign, apiKey, TokenServiceConstant.ALGORITHM_HMAC_SHA512);
             signature = signatureCoreMapper.mapSymmetric(request, stringToSign, hmacSha512Signature);
             signatureService.saveSymmetric(signature);
         }
