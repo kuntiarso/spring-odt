@@ -55,6 +55,7 @@ public class SignatureEntityMapper {
                 .setDigest(entity.getDigest())
                 .setStringToSign(entity.getStringToSign())
                 .setSignature(entity.getSignature())
+                .setTimestamp(entity.getCreatedAt())
                 .setCreatedAt(entity.getCreatedAt())
                 .setCreatedBy(entity.getCreatedBy())
                 .setUpdatedAt(entity.getUpdatedAt())

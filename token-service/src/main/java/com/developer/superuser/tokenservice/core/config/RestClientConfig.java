@@ -8,6 +8,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.RestClient;
 
+import java.nio.charset.StandardCharsets;
+
 @Configuration
 @Slf4j
 public class RestClientConfig {
@@ -20,7 +22,7 @@ public class RestClientConfig {
                     log.info("DokuRestClient request URI --- {}", request.getURI());
                     log.info("DokuRestClient request method --- {}", request.getMethod());
                     log.info("DokuRestClient request headers --- {}", request.getHeaders());
-                    log.info("DokuRestClient request body --- {}", body);
+                    log.info("DokuRestClient request body --- {}", new String(body, StandardCharsets.UTF_8));
                     return execution.execute(request, body);
                 }))
                 .build();

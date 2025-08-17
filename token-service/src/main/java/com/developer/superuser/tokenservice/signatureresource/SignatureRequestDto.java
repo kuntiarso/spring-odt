@@ -26,5 +26,5 @@ public class SignatureRequestDto {
     private String token;
     private String digest;
     @JsonIgnore
-    private Instant timestamp = Dates.now();
+    private final Instant timestamp = Dates.now();
 }

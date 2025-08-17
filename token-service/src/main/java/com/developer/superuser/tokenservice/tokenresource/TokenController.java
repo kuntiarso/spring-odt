@@ -7,10 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("token")
@@ -26,6 +23,15 @@ public class TokenController {
         ResponseData<?> response = tokenHandler.getToken(request);
         if (response.getBody() instanceof ErrorData error) {
             tokenCacheService.evictTokenB2b(request.getClientId());
+            return new ResponseEntity<>(response, error.getStatus());
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @DeleteMapping("evict/{clientId}")
+    public ResponseEntity<?> evictToken(@PathVariable("clientId") String clientId) {
+        ResponseData<?> response = tokenHandler.evictToken(clientId);
+        if (response.getBody() instanceof ErrorData error) {
             return new ResponseEntity<>(response, error.getStatus());
         }
         return new ResponseEntity<>(response, HttpStatus.OK);

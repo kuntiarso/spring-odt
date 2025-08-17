@@ -2,6 +2,7 @@ package com.developer.superuser.tokenservice.core.helper;
 
 import com.developer.superuser.shared.helper.Builder;
 import com.developer.superuser.shared.helper.Validator;
+import com.developer.superuser.shared.utility.Dates;
 import com.developer.superuser.tokenservice.TokenServiceConstant;
 import com.developer.superuser.tokenservice.core.enumeration.AlgoType;
 import com.developer.superuser.tokenservice.core.enumeration.SignType;
@@ -35,7 +36,7 @@ public class AsymmetricSignatureHelper implements Validator<SignatureRequestDto,
         sb.append(TokenServiceConstant.SYMBOL_COLON);
         sb.append(request.getDigest());
         sb.append(TokenServiceConstant.SYMBOL_COLON);
-        sb.append(request.getTimestamp());
+        sb.append(Dates.toInstantString(request.getTimestamp()));
         return sb.toString();
     }
 }

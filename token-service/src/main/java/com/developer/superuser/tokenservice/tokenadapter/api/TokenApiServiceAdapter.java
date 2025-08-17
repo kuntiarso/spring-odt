@@ -1,6 +1,5 @@
 package com.developer.superuser.tokenservice.tokenadapter.api;
 
-import com.developer.superuser.tokenservice.core.enumeration.TokenType;
 import com.developer.superuser.tokenservice.token.Token;
 import com.developer.superuser.tokenservice.token.TokenApiService;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +14,7 @@ public class TokenApiServiceAdapter implements TokenApiService {
 
     @Override
     public Token fetchTokenB2b(Token token) {
-        Token tokenResponse = tokenApi.fetchB2b(token);
+        Token tokenResponse = tokenApi.dokuFetchB2b(token);
         log.info("Printing token response from doku api --- {}", tokenResponse);
         return tokenResponse;
     }

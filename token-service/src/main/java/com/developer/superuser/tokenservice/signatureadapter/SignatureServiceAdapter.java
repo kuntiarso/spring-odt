@@ -14,19 +14,19 @@ public class SignatureServiceAdapter implements SignatureService {
 
     @Override
     public void saveNonSnap(Signature signature) {
-        log.info("Saving non-snap signature");
+        log.debug("Saving non-snap signature");
         signatureRepository.save(signatureEntityMapper.toEntityNonSnap(signature));
     }
 
     @Override
     public void saveSymmetric(Signature signature) {
-        log.info("Saving symmetric signature");
+        log.debug("Saving symmetric signature");
         signatureRepository.save(signatureEntityMapper.toEntitySymmetric(signature));
     }
 
     @Override
     public void saveAsymmetric(Signature signature) {
-        log.info("Saving asymmetric signature");
+        log.debug("Saving asymmetric signature");
         signatureRepository.save(signatureEntityMapper.toEntityAsymmetric(signature));
     }
 

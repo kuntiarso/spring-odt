@@ -2,6 +2,7 @@ package com.developer.superuser.tokenservice.core.helper;
 
 import com.developer.superuser.shared.helper.Builder;
 import com.developer.superuser.shared.helper.Validator;
+import com.developer.superuser.shared.utility.Dates;
 import com.developer.superuser.tokenservice.TokenServiceConstant;
 import com.developer.superuser.tokenservice.signatureresource.SignatureRequestDto;
 import com.google.common.base.Preconditions;
@@ -36,7 +37,7 @@ public class NonSnapSignatureHelper implements Validator<SignatureRequestDto, Vo
         sb.append(TokenServiceConstant.SYMBOL_NEW_LINE);
         sb.append(TokenServiceConstant.NON_SNAP_TIMESTAMP);
         sb.append(TokenServiceConstant.SYMBOL_COLON);
-        sb.append(request.getTimestamp());
+        sb.append(Dates.toInstantString(request.getTimestamp()));
         sb.append(TokenServiceConstant.SYMBOL_NEW_LINE);
         sb.append(TokenServiceConstant.NON_SNAP_TARGET_ENDPOINT);
         sb.append(TokenServiceConstant.SYMBOL_COLON);

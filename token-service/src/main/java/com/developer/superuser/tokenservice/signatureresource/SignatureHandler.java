@@ -39,10 +39,10 @@ public class SignatureHandler {
     public ResponseData<SignatureResponseDto> getSign(SignatureRequestDto request) {
         try {
             Signature signature;
-            log.info("Getting signature based on signType and algoType");
+            log.debug("Getting signature based on signType and algoType");
             if (SignType.BASIC.equals(request.getSignType())) {
                 log.info("Basic sign type");
-                signature = generateBasicSignature(request);
+                signature = generateBasicSignature(request, merchantPrivateKey);
             } else if (SignType.NON_SNAP.equals(request.getSignType())) {
                 log.info("Non-snap sign type");
                 signature = generateNonSnapSignature(request, dokuConfig.getApi().getKey());
@@ -63,12 +63,12 @@ public class SignatureHandler {
         }
     }
 
-    private Signature generateBasicSignature(SignatureRequestDto request) throws NoSuchAlgorithmException, SignatureException, InvalidKeyException {
-        log.info("Starting to create basic signature");
+    private Signature generateBasicSignature(SignatureRequestDto request, PrivateKey privateKey) throws NoSuchAlgorithmException, SignatureException, InvalidKeyException {
+        log.debug("Starting to create basic signature");
         basicSignatureHelper.validate(request);
         String stringToSign = basicSignatureHelper.build(request);
         log.info("Basic signature stringToSign --- {}", stringToSign);
-        String rsaSha256Signature = HashingUtil.withRsaSha256(stringToSign, merchantPrivateKey);
+        String rsaSha256Signature = HashingUtil.withRsaSha256(stringToSign, privateKey);
         Signature signature = signatureCoreMapper.mapBasic(request, stringToSign, rsaSha256Signature);
         log.info("Final basic signature --- {}", signature.getSignature());
         return signature;
@@ -77,10 +77,10 @@ public class SignatureHandler {
     private Signature generateNonSnapSignature(SignatureRequestDto request, String apiKey) throws NoSuchAlgorithmException, InvalidKeyException {
         Signature signature;
         try {
-            log.info("Starting to create non-snap signature");
+            log.debug("Starting to create non-snap signature");
             nonSnapSignatureHelper.validate(request);
             signature = signatureService.findSignature(request.getRequestId());
-            log.info("Returning existing non-snap signature");
+            log.debug("Returning existing non-snap signature");
         } catch (EntityNotFoundException ex) {
             String stringToSign = nonSnapSignatureHelper.build(request);
             log.info("Non-snap signature stringToSign --- {}", stringToSign);
@@ -95,10 +95,10 @@ public class SignatureHandler {
     private Signature generateSymmetricSignature(SignatureRequestDto request, String apiKey) throws NoSuchAlgorithmException, InvalidKeyException {
         Signature signature;
         try {
-            log.info("Starting to create symmetric signature");
+            log.debug("Starting to create symmetric signature");
             symmetricSignatureHelper.validate(request);
             signature = signatureService.findSignature(request.getRequestId());
-            log.info("Returning existing symmetric signature");
+            log.debug("Returning existing symmetric signature");
         } catch (EntityNotFoundException ex) {
             String stringToSign = symmetricSignatureHelper.build(request);
             log.info("Symmetric signature stringToSign --- {}", stringToSign);
@@ -113,10 +113,10 @@ public class SignatureHandler {
     private Signature generateAsymmetricSignature(SignatureRequestDto request, PrivateKey privateKey) throws NoSuchAlgorithmException, SignatureException, InvalidKeyException {
         Signature signature;
         try {
-            log.info("Starting to create asymmetric signature");
+            log.debug("Starting to create asymmetric signature");
             asymmetricSignatureHelper.validate(request);
             signature = signatureService.findSignature(request.getRequestId());
-            log.info("Returning existing asymmetric signature");
+            log.debug("Returning existing asymmetric signature");
         } catch (EntityNotFoundException ex) {
             String stringToSign = asymmetricSignatureHelper.build(request);
             log.info("Asymmetric signature stringToSign --- {}", stringToSign);

@@ -21,9 +21,8 @@ public class TokenApi {
     private final DokuConfigProperties dokuConfig;
     private final TokenApiHelper tokenApiHelper;
 
-    public Token fetchB2b(Token token) {
+    public Token dokuFetchB2b(Token token) {
         Map<String, Object> body = Map.of("grantType", token.getGrantType());
-        log.info("Printing fetchB2b request body --- {}", body);
         return tokenApiHelper.execute(() ->
                 dokuRestClient.post()
                         .uri(dokuConfig.getApi().getEndpoint().get("access-token"), TokenType.B2B.label)

@@ -23,7 +23,7 @@ public class TokenHandler {
         ErrorData error = null;
         try {
             Token token = null;
-            log.info("Getting token based on tokenType");
+            log.debug("Getting token based on tokenType");
             if (TokenType.B2B.equals(request.getTokenType())) {
                 log.info("B2b token type");
                 token = getTokenB2b(request);
@@ -31,7 +31,7 @@ public class TokenHandler {
                 log.info("B2b2c token type");
                 error = ErrorData.error(HttpStatus.NOT_IMPLEMENTED);
             } else {
-                log.info("Unknown token type --- {}", request.getTokenType());
+                log.error("Unknown token type --- {}", request.getTokenType());
                 error = ErrorData.error(HttpStatus.BAD_REQUEST, "Unknown token type");
             }
             if (error != null) {
@@ -41,7 +41,18 @@ public class TokenHandler {
             }
             return ResponseData.success(tokenCoreMapper.mapResponse(token));
         } catch (Exception ex) {
-            log.error("Unknown error has occurred while getting token", ex);
+            log.error("Unknown error occurred while getting token", ex);
+            return ResponseData.error(ErrorData.error(HttpStatus.INTERNAL_SERVER_ERROR, ex.getLocalizedMessage()));
+        }
+    }
+
+    public ResponseData<?> evictToken(String clientId) {
+        try {
+            log.info("Evicting token from cache with clientId --- {}", clientId);
+            tokenCacheService.evictTokenB2b(clientId);
+            return ResponseData.success();
+        } catch (Exception ex) {
+            log.error("Unknown error occurred while evicting cached token", ex);
             return ResponseData.error(ErrorData.error(HttpStatus.INTERNAL_SERVER_ERROR, ex.getLocalizedMessage()));
         }
     }

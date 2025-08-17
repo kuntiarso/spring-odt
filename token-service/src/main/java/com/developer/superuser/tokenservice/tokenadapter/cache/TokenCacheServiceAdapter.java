@@ -22,7 +22,7 @@ public class TokenCacheServiceAdapter implements TokenCacheService {
             unless = "#result.error != null"
     )
     public Token getOrFetchTokenB2b(Token token) {
-        log.info("Cache is not available for token b2b, then fetching from doku api");
+        log.debug("Cache is not available for token b2b, then fetching from doku api");
         return tokenApiService.fetchTokenB2b(token);
     }
 
@@ -34,7 +34,7 @@ public class TokenCacheServiceAdapter implements TokenCacheService {
 
     @Override
     public boolean isTokenValid(Token token) {
-        log.info("Validating token");
+        log.debug("Validating token");
         return token != null && token.getError() == null && !Strings.isNullOrEmpty(token.getAccessToken());
     }
 }
