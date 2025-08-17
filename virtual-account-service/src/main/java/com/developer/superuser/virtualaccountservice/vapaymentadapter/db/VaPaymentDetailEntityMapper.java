@@ -10,12 +10,12 @@ import org.springframework.stereotype.Component;
 public class VaPaymentDetailEntityMapper {
     public VaPaymentDetailEntity toEntity(VaPaymentDetail vaPaymentDetail) {
         return VaPaymentDetailEntity.builder()
-                .setTransactionId(vaPaymentDetail.getTransactionId())
-                .setPartnerServiceId(vaPaymentDetail.getPartnerServiceId())
-                .setInquiryRequestId(vaPaymentDetail.getInquiryRequestId())
+                .setPaymentId(Long.parseLong(vaPaymentDetail.getPaymentId()))
+                .setPartnerId(vaPaymentDetail.getPartnerId())
+                .setInquiryId(vaPaymentDetail.getInquiryId())
                 .setCustomerNo(vaPaymentDetail.getCustomerNo())
-                .setVirtualAccountNo(vaPaymentDetail.getVirtualAccountNo())
-                .setVirtualAccountName(vaPaymentDetail.getVirtualAccountName())
+                .setVaNo(vaPaymentDetail.getVaNo())
+                .setVaName(vaPaymentDetail.getVaName())
                 .setBilledAmount(Amount.builder()
                         .setValue(vaPaymentDetail.getBilledAmount().getValue())
                         .setCurrency(vaPaymentDetail.getBilledAmount().getCurrency())

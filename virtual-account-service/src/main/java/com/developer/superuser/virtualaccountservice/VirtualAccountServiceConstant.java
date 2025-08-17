@@ -17,4 +17,9 @@ public class VirtualAccountServiceConstant {
     public final String HEADER_AUTHORIZATION = "Authorization";
 
     public final String VALUE_CHANNEL_ID = "H2H";
+    public final String VALUE_SIGN_SNAP = "SNAP";
+    public final String VALUE_SIGN_NON_SNAP = "NON_SNAP";
+    public final String VALUE_ALGO_SYMMETRIC = "SYMMETRIC";
+
+    public final String ALGORITHM_DIGEST_SHA256 = "SHA-256";
 }

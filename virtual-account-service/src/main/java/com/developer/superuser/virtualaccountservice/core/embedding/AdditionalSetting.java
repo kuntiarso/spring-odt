@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 @EqualsAndHashCode
 @ToString(callSuper = true)
 public class AdditionalSetting {
-    @Column(name = "conf_reusable")
+    @Column(name = "conf_reusable", columnDefinition = "BIT(1)")
     private boolean reusableStatus;
 
     @Column(name = "conf_min_amount", precision = 19, scale = 2)

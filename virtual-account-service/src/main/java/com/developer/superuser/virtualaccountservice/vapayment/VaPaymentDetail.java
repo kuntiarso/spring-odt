@@ -4,11 +4,13 @@ package com.developer.superuser.virtualaccountservice.vapayment;
 import com.developer.superuser.shared.audit.StandardAuditable;
 import com.developer.superuser.shared.data.AmountData;
 import com.developer.superuser.virtualaccountservice.core.data.AdditionalData;
+import com.developer.superuser.virtualaccountservice.core.data.ErrorData;
 import com.developer.superuser.virtualaccountservice.core.data.HeaderData;
 import com.developer.superuser.virtualaccountservice.core.enumeration.TransactionType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -29,22 +31,29 @@ public class VaPaymentDetail extends StandardAuditable {
     @ToString.Exclude
     private HeaderData header;
 
-    private Long transactionId;
-    private String partnerServiceId;
-    private String inquiryRequestId;
+    @JsonProperty("trxId")
+    private String paymentId;
+    @JsonProperty("partnerServiceId")
+    private String partnerId;
+    private String inquiryId;
     private String customerNo;
-    private String virtualAccountNo;
-    private String virtualAccountName;
+    @JsonProperty("virtualAccountNo")
+    private String vaNo;
+    @JsonProperty("virtualAccountName")
+    private String vaName;
+    @JsonProperty("totalAmount")
     private AmountData billedAmount;
     private AmountData paidAmount;
+    @JsonProperty("additionalInfo")
     private AdditionalData additional;
+    @JsonProperty("virtualAccountTrxType")
     private TransactionType transactionType;
+    @JsonProperty("expiredDate")
     private Instant expiredAt;
 
-    private String responseCode;
-    private String responseMessage;
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private VaPaymentDetail virtualAccountData;
+    private ErrorData error;
 }

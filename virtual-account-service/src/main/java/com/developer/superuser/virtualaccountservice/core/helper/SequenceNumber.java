@@ -1,6 +1,6 @@
 package com.developer.superuser.virtualaccountservice.core.helper;
 
-import com.developer.superuser.shared.helper.Executor;
+import com.developer.superuser.shared.helper.Generator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
@@ -11,11 +11,11 @@ import java.util.concurrent.TimeUnit;
 
 @Component
 @RequiredArgsConstructor
-public class SequenceNumberGenerator implements Executor<Void, String> {
+public class SequenceNumber implements Generator<Void, String> {
     private final StringRedisTemplate stringRedisTemplate;
 
     @Override
-    public String execute(Void unused) {
+    public String generate(Void unused) {
         String date = LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE);
         String key = "sequence_number" + date;
         Long sequence = stringRedisTemplate.opsForValue().increment(key);

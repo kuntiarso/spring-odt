@@ -1,9 +1,9 @@
 package com.developer.superuser.virtualaccountservice.core.config;
 
-import com.developer.superuser.shared.helper.Executor;
-import com.developer.superuser.virtualaccountservice.core.property.DokuConfigProperties;
-import com.developer.superuser.virtualaccountservice.vapayment.DefaultVaApiServiceAdapter;
-import com.developer.superuser.virtualaccountservice.vapayment.DefaultVaPersistenceServiceAdapter;
+import com.developer.superuser.virtualaccountservice.core.helper.OptionalOrElseThrow;
+import com.developer.superuser.virtualaccountservice.tokensvc.TokenSvcApiService;
+import com.developer.superuser.virtualaccountservice.tokensvcadapter.TokenSvcApi;
+import com.developer.superuser.virtualaccountservice.tokensvcadapter.TokenSvcApiServiceAdapter;
 import com.developer.superuser.virtualaccountservice.vapayment.VaApiService;
 import com.developer.superuser.virtualaccountservice.vapayment.VaPersistenceService;
 import com.developer.superuser.virtualaccountservice.vapaymentadapter.api.VaApi;
@@ -11,7 +11,7 @@ import com.developer.superuser.virtualaccountservice.vapaymentadapter.api.VaApiS
 import com.developer.superuser.virtualaccountservice.vapaymentadapter.db.VaPaymentDetailEntityMapper;
 import com.developer.superuser.virtualaccountservice.vapaymentadapter.db.VaPersistenceServiceAdapter;
 import com.developer.superuser.virtualaccountservice.vapaymentadapter.db.VaRepository;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -23,19 +23,12 @@ public class AdapterConfig {
     }
 
     @Bean
-    @ConditionalOnMissingBean(VaPersistenceService.class)
-    public VaPersistenceService defaultVaPersistenceService() {
-        return new DefaultVaPersistenceServiceAdapter();
+    public VaApiService vaApiService(VaApi vaApi) {
+        return new VaApiServiceAdapter(vaApi);
     }
 
     @Bean
-    public VaApiService vaApiService(VaApi vaApi, DokuConfigProperties dokuConfig, Executor<Void, String> sequenceNumberGenerator) {
-        return new VaApiServiceAdapter(vaApi, dokuConfig, sequenceNumberGenerator);
-    }
-
-    @Bean
-    @ConditionalOnMissingBean(VaApiService.class)
-    public VaApiService defaultVaApiService() {
-        return new DefaultVaApiServiceAdapter();
+    public TokenSvcApiService tokenSvcApiService(TokenSvcApi tokenSvcApi, OptionalOrElseThrow<JsonNode> optionalOrElseThrow) {
+        return new TokenSvcApiServiceAdapter(tokenSvcApi, optionalOrElseThrow);
     }
 }
