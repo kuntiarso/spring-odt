@@ -1,7 +1,6 @@
 package com.developer.superuser.virtualaccountservice.core.config;
 
 import com.developer.superuser.virtualaccountservice.core.property.DokuConfigProperties;
-import com.developer.superuser.virtualaccountservice.core.property.TokenSvcConfigProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -19,11 +18,6 @@ public class RestClientConfig {
     @Bean
     public RestClient dokuRestClient(ObjectMapper mapper, DokuConfigProperties dokuConfig) {
         return buildRestClient(mapper, dokuConfig.getApi().getBaseUrl(), "DokuRestClient");
-    }
-
-    @Bean
-    public RestClient tokenSvcRestClient(ObjectMapper mapper, TokenSvcConfigProperties tokenSvcConfig) {
-        return buildRestClient(mapper, tokenSvcConfig.getBaseUrl(), "TokenSvcRestClient");
     }
 
     private RestClient buildRestClient(ObjectMapper mapper, String baseUrl, String beanName) {

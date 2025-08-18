@@ -8,7 +8,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 @UtilityClass
-public class HeaderUtil {
+public class Headers {
     public MultiValueMap<String, String> multiValueMapHeader(HeaderData header) {
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.add(VirtualAccountServiceConstant.HEADER_TIMESTAMP, header.getTimestamp());

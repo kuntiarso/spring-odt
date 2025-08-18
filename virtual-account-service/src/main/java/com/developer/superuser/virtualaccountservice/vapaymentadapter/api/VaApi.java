@@ -2,7 +2,7 @@ package com.developer.superuser.virtualaccountservice.vapaymentadapter.api;
 
 import com.developer.superuser.virtualaccountservice.core.helper.VaApiHelper;
 import com.developer.superuser.virtualaccountservice.core.property.DokuConfigProperties;
-import com.developer.superuser.virtualaccountservice.core.utility.HeaderUtil;
+import com.developer.superuser.virtualaccountservice.core.utility.Headers;
 import com.developer.superuser.virtualaccountservice.vapayment.VaPaymentDetail;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -19,7 +19,7 @@ public class VaApi {
 
     @SneakyThrows
     public VaPaymentDetail dokuCreateVa(VaPaymentDetail va) {
-        MultiValueMap<String, String> headerMap = HeaderUtil.multiValueMapHeader(va.getHeader());
+        MultiValueMap<String, String> headerMap = Headers.multiValueMapHeader(va.getHeader());
         return vaApiHelper.execute(() ->
                 dokuRestClient.post()
                         .uri(dokuConfig.getApi().getEndpoint().get("va-create"))
