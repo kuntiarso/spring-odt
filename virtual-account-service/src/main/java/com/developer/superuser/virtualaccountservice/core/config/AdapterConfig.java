@@ -1,5 +1,6 @@
 package com.developer.superuser.virtualaccountservice.core.config;
 
+import com.developer.superuser.shared.project.springodt.sign.Symmetric;
 import com.developer.superuser.virtualaccountservice.core.helper.OptionalOrElseThrow;
 import com.developer.superuser.virtualaccountservice.tokensvc.TokenSvcApiService;
 import com.developer.superuser.virtualaccountservice.tokensvcadapter.TokenSvcApi;
@@ -11,6 +12,7 @@ import com.developer.superuser.virtualaccountservice.vapaymentadapter.api.VaApiS
 import com.developer.superuser.virtualaccountservice.vapaymentadapter.db.VaPaymentDetailEntityMapper;
 import com.developer.superuser.virtualaccountservice.vapaymentadapter.db.VaPersistenceServiceAdapter;
 import com.developer.superuser.virtualaccountservice.vapaymentadapter.db.VaRepository;
+import com.developer.superuser.virtualaccountservice.vapaymentresource.mapper.SignMapper;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,8 +25,8 @@ public class AdapterConfig {
     }
 
     @Bean
-    public VaApiService vaApiService(VaApi vaApi) {
-        return new VaApiServiceAdapter(vaApi);
+    public VaApiService vaApiService(Symmetric symmetric, SignMapper signMapper, VaApi vaApi) {
+        return new VaApiServiceAdapter(symmetric, signMapper, vaApi);
     }
 
     @Bean

@@ -22,4 +22,6 @@ public class VirtualAccountServiceConstant {
     public final String VALUE_ALGO_SYMMETRIC = "SYMMETRIC";
 
     public final String ALGORITHM_DIGEST_SHA256 = "SHA-256";
+    public final String ALGORITHM_HMAC_SHA256 = "HmacSHA256";
+    public final String ALGORITHM_HMAC_SHA512 = "HmacSHA512";
 }

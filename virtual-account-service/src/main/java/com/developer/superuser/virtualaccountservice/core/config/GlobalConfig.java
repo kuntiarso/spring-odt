@@ -1,11 +1,18 @@
 package com.developer.superuser.virtualaccountservice.core.config;
 
+import com.developer.superuser.shared.project.springodt.sign.Symmetric;
+import com.developer.superuser.virtualaccountservice.VirtualAccountServiceConstant;
 import com.developer.superuser.virtualaccountservice.core.property.DokuConfigProperties;
 import com.developer.superuser.virtualaccountservice.core.property.TokenSvcConfigProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @EnableConfigurationProperties({DokuConfigProperties.class, TokenSvcConfigProperties.class})
 public class GlobalConfig {
+    @Bean
+    public Symmetric symmetricSign(DokuConfigProperties dokuConfig) {
+        return new Symmetric(VirtualAccountServiceConstant.ALGORITHM_HMAC_SHA512, dokuConfig.getApi().getKey());
+    }
 }
