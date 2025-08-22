@@ -1,6 +1,6 @@
 package com.developer.superuser.virtualaccountservice.vapaymentadapter.db;
 
-import com.developer.superuser.virtualaccountservice.vapayment.VaPaymentDetail;
+import com.developer.superuser.virtualaccountservice.vapayment.VaDetail;
 import com.developer.superuser.virtualaccountservice.vapayment.VaPersistenceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,8 +12,8 @@ public class VaPersistenceServiceAdapter implements VaPersistenceService {
     private final VaPaymentDetailEntityMapper vaPaymentDetailEntityMapper;
 
     @Override
-    public void saveVa(VaPaymentDetail vaPaymentDetail) {
-        log.info("Saving va payment detail");
-        vaRepository.save(vaPaymentDetailEntityMapper.toEntity(vaPaymentDetail));
+    public void saveVa(VaDetail va) {
+        log.debug("Persisting va detail");
+        vaRepository.save(vaPaymentDetailEntityMapper.toEntity(va));
     }
 }

@@ -1,9 +1,8 @@
 package com.developer.superuser.virtualaccountservice.vapaymentresource;
 
 import com.developer.superuser.shared.data.ResponseData;
-import com.developer.superuser.virtualaccountservice.core.data.ErrorDto;
-import com.developer.superuser.virtualaccountservice.vapaymentresource.dto.CreateVaRequest;
-import jakarta.validation.Valid;
+import com.developer.superuser.shared.openapi.contract.ErrorData;
+import com.developer.superuser.shared.openapi.contract.VaRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,11 +20,11 @@ public class VaController {
     private final VaHandler vaHandler;
 
     @PostMapping("create")
-    public ResponseEntity<?> createVa(@Valid @RequestBody CreateVaRequest request) {
-        log.info("New request for create va --- {}", request);
+    public ResponseEntity<?> createVa(@RequestBody VaRequest request) {
+        log.info("Request detail for create va --- {}", request);
         ResponseData<?> response = vaHandler.createVa(request);
-        if (response.getBody() instanceof ErrorDto error) {
-            return new ResponseEntity<>(response, error.getStatus());
+        if (response.getBody() instanceof ErrorData error) {
+            return new ResponseEntity<>(response, HttpStatus.valueOf(error.getStatus()));
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

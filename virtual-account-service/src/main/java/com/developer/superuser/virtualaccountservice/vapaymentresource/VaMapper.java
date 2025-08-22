@@ -1,23 +1,22 @@
-package com.developer.superuser.virtualaccountservice.vapaymentresource.mapper;
+package com.developer.superuser.virtualaccountservice.vapaymentresource;
 
 import com.developer.superuser.shared.openapi.contract.AmountData;
 import com.developer.superuser.shared.openapi.contract.VaRequest;
 import com.developer.superuser.shared.openapi.contract.VaResponse;
 import com.developer.superuser.virtualaccountservice.VirtualAccountServiceConstant;
-import com.developer.superuser.virtualaccountservice.vapayment.VaPaymentDetail;
+import com.developer.superuser.virtualaccountservice.vapayment.VaDetail;
 import org.springframework.stereotype.Component;
 
 @Component
-public class VaCoreMapper {
-    public VaPaymentDetail mapCore(String requestId, VaRequest request) {
-        return VaPaymentDetail.builder()
+public class VaMapper {
+    public VaDetail mapCore(VaRequest request) {
+        return VaDetail.builder()
                 .setHeader(request.getHeader().toBuilder()
-                        .setRequestId(requestId)
                         .setChannelId(VirtualAccountServiceConstant.VALUE_CHANNEL_ID)
                         .build())
                 .setPaymentId(request.getPaymentId())
                 .setPartnerId(request.getPartnerId())
-                .setRequestId(requestId)
+                .setRequestId(request.getHeader().getRequestId())
                 .setCustomerNo(request.getCustomerNo())
                 .setVaNo(request.getVaNo())
                 .setVaName(request.getVaName())
@@ -27,8 +26,8 @@ public class VaCoreMapper {
                 .build();
     }
 
-    public VaPaymentDetail mapDokuResponse(VaPaymentDetail va) {
-        VaPaymentDetail vaDokuResponse = va.getVirtualAccountData();
+    public VaDetail mapCore(VaDetail va) {
+        VaDetail vaDokuResponse = va.getVirtualAccountData();
         return va.toBuilder()
                 .setPaymentId(vaDokuResponse.getPaymentId())
                 .setPartnerId(vaDokuResponse.getPartnerId())
@@ -42,7 +41,7 @@ public class VaCoreMapper {
                 .build();
     }
 
-    public VaResponse mapResponse(VaPaymentDetail va) {
+    public VaResponse mapResponse(VaDetail va) {
         return VaResponse.builder()
                 .setPaymentId(va.getPaymentId())
                 .setVaNo(va.getVaNo())

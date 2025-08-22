@@ -1,7 +1,8 @@
 package com.developer.superuser.virtualaccountservice.core.utility;
 
+import com.developer.superuser.shared.openapi.contract.HeaderData;
+import com.developer.superuser.shared.utility.Dates;
 import com.developer.superuser.virtualaccountservice.VirtualAccountServiceConstant;
-import com.developer.superuser.virtualaccountservice.core.data.HeaderData;
 import com.google.common.base.Strings;
 import lombok.experimental.UtilityClass;
 import org.springframework.util.LinkedMultiValueMap;
@@ -11,7 +12,7 @@ import org.springframework.util.MultiValueMap;
 public class Headers {
     public MultiValueMap<String, String> multiValueMapHeader(HeaderData header) {
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.add(VirtualAccountServiceConstant.HEADER_TIMESTAMP, header.getTimestamp());
+        map.add(VirtualAccountServiceConstant.HEADER_TIMESTAMP, Dates.toInstantString(header.getTimestamp()));
         map.add(VirtualAccountServiceConstant.HEADER_SIGNATURE, header.getSignature());
         map.add(VirtualAccountServiceConstant.HEADER_PARTNER_ID, header.getClientId());
         map.add(VirtualAccountServiceConstant.HEADER_EXTERNAL_ID, header.getRequestId());

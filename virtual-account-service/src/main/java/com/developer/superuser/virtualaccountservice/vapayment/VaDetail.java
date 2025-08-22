@@ -21,7 +21,7 @@ import java.time.Instant;
 @ToString(callSuper = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class VaPaymentDetail extends StandardAuditable {
+public class VaDetail extends StandardAuditable {
     @JsonIgnore
     private HeaderData header;
     @JsonProperty("trxId")
@@ -46,6 +46,7 @@ public class VaPaymentDetail extends StandardAuditable {
     private Instant expiredAt;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private VaPaymentDetail virtualAccountData;
+    private VaDetail virtualAccountData;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private ErrorData error;
 }

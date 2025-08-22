@@ -3,7 +3,7 @@ package com.developer.superuser.virtualaccountservice.vapaymentadapter.api;
 import com.developer.superuser.virtualaccountservice.core.helper.VaApiHelper;
 import com.developer.superuser.virtualaccountservice.core.property.DokuConfigProperties;
 import com.developer.superuser.virtualaccountservice.core.utility.Headers;
-import com.developer.superuser.virtualaccountservice.vapayment.VaPaymentDetail;
+import com.developer.superuser.virtualaccountservice.vapayment.VaDetail;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
@@ -18,7 +18,7 @@ public class VaApi {
     private final VaApiHelper vaApiHelper;
 
     @SneakyThrows
-    public VaPaymentDetail dokuCreateVa(VaPaymentDetail va) {
+    public VaDetail dokuCreateVa(VaDetail va) {
         MultiValueMap<String, String> headerMap = Headers.multiValueMapHeader(va.getHeader());
         return vaApiHelper.execute(() ->
                 dokuRestClient.post()
@@ -26,7 +26,7 @@ public class VaApi {
                         .headers(header -> header.addAll(headerMap))
                         .body(va)
                         .retrieve()
-                        .body(VaPaymentDetail.class)
+                        .body(VaDetail.class)
         );
     }
 }

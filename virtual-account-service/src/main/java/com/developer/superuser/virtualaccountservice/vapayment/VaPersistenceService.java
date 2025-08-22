@@ -1,7 +1,7 @@
 package com.developer.superuser.virtualaccountservice.vapayment;
 
 public interface VaPersistenceService {
-    void saveVa(VaPaymentDetail vaPaymentDetail);
+    void saveVa(VaDetail vaDetail);
     // TODO: implement below
     // void saveDirectVa(VaPaymentDetail vaPaymentDetail);
 }

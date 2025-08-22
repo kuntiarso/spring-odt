@@ -1,6 +1,6 @@
 package com.developer.superuser.virtualaccountservice.core.embedding;
 
-import com.developer.superuser.virtualaccountservice.core.enumeration.Channel;
+import com.developer.superuser.shared.openapi.contract.Channel;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;

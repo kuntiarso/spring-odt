@@ -1,9 +1,10 @@
 package com.developer.superuser.virtualaccountservice.core.helper;
 
 import com.developer.superuser.shared.helper.Executor;
-import com.developer.superuser.virtualaccountservice.core.data.ErrorData;
-import com.developer.superuser.virtualaccountservice.vapayment.VaPaymentDetail;
-import com.developer.superuser.virtualaccountservice.vapaymentresource.mapper.VaCoreMapper;
+import com.developer.superuser.shared.openapi.contract.ErrorData;
+import com.developer.superuser.shared.utility.Errors;
+import com.developer.superuser.virtualaccountservice.vapayment.VaDetail;
+import com.developer.superuser.virtualaccountservice.vapaymentresource.VaMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -15,28 +16,28 @@ import java.util.function.Supplier;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class VaApiHelper implements Executor<Supplier<VaPaymentDetail>, VaPaymentDetail> {
-    private final VaCoreMapper vaCoreMapper;
+public class VaApiHelper implements Executor<Supplier<VaDetail>, VaDetail> {
+    private final VaMapper vaMapper;
 
     @Override
-    public VaPaymentDetail execute(Supplier<VaPaymentDetail> supplier) {
+    public VaDetail execute(Supplier<VaDetail> supplier) {
         ErrorData error;
         try {
-            return vaCoreMapper.mapDokuResponse(supplier.get());
+            return vaMapper.mapCore(supplier.get());
         } catch (RestClientResponseException rcse) {
             log.error("Receiving unsuccessful response from doku VA api", rcse);
             HttpStatus responseStatus = HttpStatus.resolve(rcse.getStatusCode().value());
             log.error("Response status --- {}", responseStatus);
             error = rcse.getResponseBodyAs(ErrorData.class);
             if (error != null) {
-                error.setStatus(responseStatus);
+                error.setStatus(rcse.getStatusCode().value());
             } else {
-                error = ErrorData.builder().setStatus(responseStatus).build();
+                error = Errors.error(rcse.getStatusCode().value());
             }
         } catch (Exception ex) {
             log.error("Unknown error has occurred while calling doku VA api", ex);
-            error = ErrorData.builder().setStatus(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            error = Errors.internalServerError(ex.getLocalizedMessage());
         }
-        return VaPaymentDetail.builder().setError(error).build();
+        return VaDetail.builder().setError(error).build();
     }
 }

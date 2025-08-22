@@ -31,6 +31,9 @@ public class VaPaymentDetailEntity extends StandardAuditableEntity {
     @Column(name = "inquiry_id", unique = true, length = 30)
     private String inquiryId;
 
+    @Column(name = "request_id", nullable = false, unique = true, length = 14)
+    private String requestId;
+
     @Column(name = "customer_no", nullable = false, length = 20)
     private String customerNo;
 
