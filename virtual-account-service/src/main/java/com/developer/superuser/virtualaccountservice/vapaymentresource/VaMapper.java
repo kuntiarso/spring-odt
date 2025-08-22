@@ -1,38 +1,28 @@
 package com.developer.superuser.virtualaccountservice.vapaymentresource.mapper;
 
-import com.developer.superuser.shared.data.AmountData;
-import com.developer.superuser.shared.enumeration.Currency;
+import com.developer.superuser.shared.openapi.contract.AmountData;
+import com.developer.superuser.shared.openapi.contract.VaRequest;
+import com.developer.superuser.shared.openapi.contract.VaResponse;
 import com.developer.superuser.virtualaccountservice.VirtualAccountServiceConstant;
-import com.developer.superuser.virtualaccountservice.core.data.AdditionalData;
-import com.developer.superuser.virtualaccountservice.core.data.HeaderData;
 import com.developer.superuser.virtualaccountservice.vapayment.VaPaymentDetail;
-import com.developer.superuser.virtualaccountservice.vapaymentresource.dto.CreateVaRequest;
-import com.developer.superuser.virtualaccountservice.vapaymentresource.dto.CreateVaResponse;
 import org.springframework.stereotype.Component;
 
 @Component
 public class VaCoreMapper {
-    public VaPaymentDetail toVaCore(String requestId, CreateVaRequest request) {
+    public VaPaymentDetail mapCore(String requestId, VaRequest request) {
         return VaPaymentDetail.builder()
-                .setHeader(HeaderData.builder()
-                        .setClientId(request.getHeader().getClientId())
+                .setHeader(request.getHeader().toBuilder()
                         .setRequestId(requestId)
-                        .setTokenScheme(request.getHeader().getTokenScheme())
-                        .setToken(request.getHeader().getToken())
                         .setChannelId(VirtualAccountServiceConstant.VALUE_CHANNEL_ID)
                         .build())
                 .setPaymentId(request.getPaymentId())
                 .setPartnerId(request.getPartnerId())
+                .setRequestId(requestId)
                 .setCustomerNo(request.getCustomerNo())
                 .setVaNo(request.getVaNo())
                 .setVaName(request.getVaName())
-                .setBilledAmount(AmountData.builder()
-                        .setValue(request.getBilledAmount().getValue())
-                        .setCurrency(Currency.valueOf(request.getBilledAmount().getCurrency()))
-                        .build())
-                .setAdditional(AdditionalData.builder()
-                        .setChannel(request.getAdditional().getChannel())
-                        .build())
+                .setBilledAmount(request.getBilledAmount())
+                .setAdditional(request.getAdditional())
                 .setTransactionType(request.getTransactionType())
                 .build();
     }
@@ -52,11 +42,14 @@ public class VaCoreMapper {
                 .build();
     }
 
-    public CreateVaResponse mapResponse(VaPaymentDetail va) {
-        return CreateVaResponse.builder()
+    public VaResponse mapResponse(VaPaymentDetail va) {
+        return VaResponse.builder()
                 .setPaymentId(va.getPaymentId())
                 .setVaNo(va.getVaNo())
-                .setBilledAmount(va.getBilledAmount())
+                .setBilledAmount(AmountData.builder()
+                        .setValue(va.getBilledAmount().getValue())
+                        .setCurrency(va.getBilledAmount().getCurrency())
+                        .build())
                 .setAdditional(va.getAdditional())
                 .setExpiredDate(va.getExpiredAt())
                 .build();

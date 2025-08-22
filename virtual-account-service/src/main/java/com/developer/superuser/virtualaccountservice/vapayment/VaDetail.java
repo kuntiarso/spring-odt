@@ -2,11 +2,7 @@ package com.developer.superuser.virtualaccountservice.vapayment;
 
 
 import com.developer.superuser.shared.audit.StandardAuditable;
-import com.developer.superuser.shared.data.AmountData;
-import com.developer.superuser.virtualaccountservice.core.data.AdditionalData;
-import com.developer.superuser.virtualaccountservice.core.data.ErrorData;
-import com.developer.superuser.virtualaccountservice.core.data.HeaderData;
-import com.developer.superuser.virtualaccountservice.core.enumeration.TransactionType;
+import com.developer.superuser.shared.openapi.contract.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -27,15 +23,13 @@ import java.time.Instant;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class VaPaymentDetail extends StandardAuditable {
     @JsonIgnore
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
     private HeaderData header;
-
     @JsonProperty("trxId")
     private String paymentId;
     @JsonProperty("partnerServiceId")
     private String partnerId;
     private String inquiryId;
+    private String requestId;
     private String customerNo;
     @JsonProperty("virtualAccountNo")
     private String vaNo;
@@ -52,8 +46,6 @@ public class VaPaymentDetail extends StandardAuditable {
     private Instant expiredAt;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
     private VaPaymentDetail virtualAccountData;
     private ErrorData error;
 }

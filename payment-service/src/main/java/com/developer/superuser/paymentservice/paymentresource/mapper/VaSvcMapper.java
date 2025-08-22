@@ -6,6 +6,7 @@ import com.developer.superuser.paymentservice.core.property.DokuConfigProperties
 import com.developer.superuser.paymentservice.payment.Payment;
 import com.developer.superuser.paymentservice.paymentresource.dto.PaymentVaRequest;
 import com.developer.superuser.paymentservice.paymentresource.dto.PaymentVaResponse;
+import com.developer.superuser.shared.utility.Dates;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -21,11 +22,13 @@ public class VaSvcJsonMapper {
     private final DokuConfigProperties dokuConfig;
 
     public JsonNode toVaJsonRequest(PaymentVaRequest request, Payment payment, JsonNode tokenResponse) {
+        String token = tokenResponse.path("tokenScheme").asText("")
+                .concat(" ")
+                .concat(tokenResponse.path("accessToken").asText(""));
         ObjectNode header = mapper.createObjectNode()
-                .put("timestamp", Instant.now().toString())
                 .put("clientId", dokuConfig.getMerchant().getClientId())
                 .put("requestId", payment.getRequestId())
-                .put("token", tokenResponse.path("accessToken").asText(null));
+                .put("token", token);
         ObjectNode body = mapper.createObjectNode()
                 .put("paymentId", payment.getId())
                 .put("partnerId", request.getPartnerId())
@@ -38,6 +41,7 @@ public class VaSvcJsonMapper {
                 .put("currency", payment.getAmount().getCurrency().name());
         ObjectNode additional = mapper.createObjectNode()
                 .put("channel", request.getChannel());
+        body.set("header", header);
         body.set("billedAmount", billedAmount);
         body.set("additional", additional);
         return body;

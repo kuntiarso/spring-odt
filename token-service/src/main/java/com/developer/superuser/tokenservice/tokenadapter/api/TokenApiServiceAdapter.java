@@ -1,5 +1,7 @@
 package com.developer.superuser.tokenservice.tokenadapter.api;
 
+import com.developer.superuser.shared.project.springodt.sign.Basic;
+import com.developer.superuser.shared.project.springodt.sign.Sign;
 import com.developer.superuser.tokenservice.token.Token;
 import com.developer.superuser.tokenservice.token.TokenApiService;
 import lombok.RequiredArgsConstructor;
@@ -10,13 +12,17 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 @Slf4j
 public class TokenApiServiceAdapter implements TokenApiService {
+    private final Basic basic;
+    private final SignMapper signMapper;
     private final TokenApi tokenApi;
 
     @Override
     public Token fetchTokenB2b(Token token) {
-        Token tokenResponse = tokenApi.dokuFetchB2b(token);
-        log.info("Printing token response from doku api --- {}", tokenResponse);
-        return tokenResponse;
+        Sign sign = basic.generate(signMapper.toBasicSign(token));
+        log.info("Printing basic sign result --- {}", sign);
+        token.setSignature(sign.getSignature());
+        token.setTimestamp(sign.getTimestamp());
+        return tokenApi.dokuFetchB2b(token);
     }
 
     @Override

@@ -34,8 +34,8 @@ public class PaymentVaRequest {
     @NotNull(message = "vaName must not be null")
     @NotBlank(message = "vaName must not be empty")
     private String vaName;
-    @NotNull(message = "billedAmount must not be null")
     @Valid
+    @NotNull(message = "billedAmount must not be null")
     private AmountDto billedAmount;
     @NotNull(message = "transactionType must not be null")
     private Character transactionType;

@@ -1,8 +1,8 @@
 package com.developer.superuser.tokenservice.signature;
 
 import com.developer.superuser.shared.audit.StandardAuditable;
+import com.developer.superuser.shared.openapi.contract.GrantType;
 import com.developer.superuser.tokenservice.core.enumeration.AlgoType;
-import com.developer.superuser.tokenservice.core.enumeration.GrantType;
 import com.developer.superuser.tokenservice.core.enumeration.SignType;
 import lombok.*;
 import lombok.experimental.SuperBuilder;

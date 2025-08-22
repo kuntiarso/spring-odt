@@ -1,7 +1,7 @@
 package com.developer.superuser.tokenservice.signatureadapter;
 
-import com.developer.superuser.tokenservice.core.enumeration.SignType;
 import com.developer.superuser.tokenservice.core.enumeration.AlgoType;
+import com.developer.superuser.tokenservice.core.enumeration.SignType;
 import com.developer.superuser.tokenservice.signature.Signature;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;

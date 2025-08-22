@@ -1,7 +1,7 @@
 package com.developer.superuser.tokenservice.token;
 
-import com.developer.superuser.tokenservice.core.data.ErrorData;
-import com.developer.superuser.tokenservice.core.enumeration.TokenType;
+import com.developer.superuser.shared.openapi.contract.ErrorData;
+import com.developer.superuser.shared.openapi.contract.TokenType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
@@ -36,5 +36,7 @@ public class Token implements Serializable {
     private Instant refreshTokenExpiryTime;
     private Integer expiresIn;
     private String additionalInfo;
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private ErrorData error;
 }

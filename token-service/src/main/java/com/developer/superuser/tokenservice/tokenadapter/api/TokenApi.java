@@ -1,10 +1,9 @@
 package com.developer.superuser.tokenservice.tokenadapter.api;
 
-import com.developer.superuser.shared.utility.Dates;
-import com.developer.superuser.tokenservice.TokenServiceConstant;
-import com.developer.superuser.tokenservice.core.enumeration.TokenType;
+import com.developer.superuser.shared.openapi.contract.TokenType;
 import com.developer.superuser.tokenservice.core.helper.TokenApiHelper;
 import com.developer.superuser.tokenservice.core.property.DokuConfigProperties;
+import com.developer.superuser.tokenservice.core.utility.Headers;
 import com.developer.superuser.tokenservice.token.Token;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,10 +24,8 @@ public class TokenApi {
         Map<String, Object> body = Map.of("grantType", token.getGrantType());
         return tokenApiHelper.execute(() ->
                 dokuRestClient.post()
-                        .uri(dokuConfig.getApi().getEndpoint().get("access-token"), TokenType.B2B.label)
-                        .header(TokenServiceConstant.HEADER_CLIENT_KEY, token.getClientId())
-                        .header(TokenServiceConstant.HEADER_SIGNATURE, token.getSignature())
-                        .header(TokenServiceConstant.HEADER_TIMESTAMP, Dates.toInstantString(token.getTimestamp()))
+                        .uri(dokuConfig.getApi().getEndpoint().get("access-token"), TokenType.B2_B.getValue())
+                        .headers(header -> header.addAll(Headers.multiValueMapHeader(token)))
                         .body(body)
                         .retrieve()
                         .body(Token.class)

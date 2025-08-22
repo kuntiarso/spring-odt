@@ -1,21 +1,21 @@
-package com.developer.superuser.tokenservice.tokenresource;
+package com.developer.superuser.tokenservice.tokenresource.mapper;
 
+import com.developer.superuser.shared.openapi.contract.TokenRequest;
+import com.developer.superuser.shared.openapi.contract.TokenResponse;
 import com.developer.superuser.tokenservice.token.Token;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TokenCoreMapper {
-    public Token map(TokenRequestDto request) {
+public class TokenMapper {
+    public Token mapCore(TokenRequest request) {
         return Token.builder()
                 .setClientId(request.getClientId())
-                .setSignature(request.getSignature())
-                .setGrantType(request.getGrantType().label)
-                .setTimestamp(request.getTimestamp())
+                .setGrantType(request.getGrantType().getValue())
                 .build();
     }
 
-    public TokenResponseDto mapResponse(Token token) {
-        return TokenResponseDto.builder()
+    public TokenResponse mapResponse(Token token) {
+        return TokenResponse.builder()
                 .setTokenScheme(token.getTokenScheme())
                 .setAccessToken(token.getAccessToken())
                 .setAccessTokenExpiryTime(token.getAccessTokenExpiryTime())
