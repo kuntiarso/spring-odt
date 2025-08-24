@@ -27,11 +27,11 @@ public class TokenHandler {
         try {
             Token token = Token.builder().build();
             log.debug("Getting token based on tokenType");
-            if (TokenType.B2_B.equals(request.getTokenType())) {
+            if (TokenType.B2B.equals(request.getTokenType())) {
                 log.info("Getting b2b token");
                 tokenB2bHelper.validate(request);
                 token = tokenB2bHelper.execute(tokenMapper.mapCore(request));
-            } else if (TokenType.B2_B2_C.equals(request.getTokenType())) {
+            } else if (TokenType.B2B2C.equals(request.getTokenType())) {
                 log.info("Getting b2b2c token");
                 error = Errors.error(HttpStatus.NOT_IMPLEMENTED.value());
             } else {
