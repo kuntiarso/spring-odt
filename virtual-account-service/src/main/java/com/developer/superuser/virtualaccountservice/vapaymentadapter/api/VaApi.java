@@ -19,7 +19,7 @@ public class VaApi {
 
     @SneakyThrows
     public VaDetail dokuCreateVa(VaDetail va) {
-        MultiValueMap<String, String> headerMap = Headers.multiValueMapHeader(va.getHeader());
+        MultiValueMap<String, String> headerMap = Headers.multiValueMapHeader(va);
         return vaApiHelper.execute(() ->
                 dokuRestClient.post()
                         .uri(dokuConfig.getApi().getEndpoint().get("va-create"))

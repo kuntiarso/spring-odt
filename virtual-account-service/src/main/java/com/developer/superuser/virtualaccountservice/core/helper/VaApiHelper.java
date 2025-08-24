@@ -23,7 +23,9 @@ public class VaApiHelper implements Executor<Supplier<VaDetail>, VaDetail> {
     public VaDetail execute(Supplier<VaDetail> supplier) {
         ErrorData error;
         try {
-            return vaMapper.mapCore(supplier.get());
+            VaDetail va = supplier.get();
+            log.info("Raw va response from doku --- {}", va);
+            return vaMapper.mapCore(va);
         } catch (RestClientResponseException rcse) {
             log.error("Receiving unsuccessful response from doku VA api", rcse);
             HttpStatus responseStatus = HttpStatus.resolve(rcse.getStatusCode().value());
@@ -35,7 +37,7 @@ public class VaApiHelper implements Executor<Supplier<VaDetail>, VaDetail> {
                 error = Errors.error(rcse.getStatusCode().value());
             }
         } catch (Exception ex) {
-            log.error("Unknown error has occurred while calling doku VA api", ex);
+            log.error("Unknown error occurred while calling doku VA api", ex);
             error = Errors.internalServerError(ex.getLocalizedMessage());
         }
         return VaDetail.builder().setError(error).build();

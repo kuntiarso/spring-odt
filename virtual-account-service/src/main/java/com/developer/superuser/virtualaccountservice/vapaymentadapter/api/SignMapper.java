@@ -24,7 +24,7 @@ public class SignMapper {
         return Sign.builder()
                 .setHttpMethod(HttpMethod.POST.name())
                 .setEndpoint(dokuConfig.getApi().getEndpoint().get("va-create"))
-                .setToken(va.getHeader().getToken())
+                .setToken(va.getToken())
                 .setDigest(digest.generate(mapper.writeValueAsString(va)))
                 .setTimestamp(Instant.now())
                 .build();

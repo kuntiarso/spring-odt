@@ -1,9 +1,7 @@
 package com.developer.superuser.virtualaccountservice.vapaymentresource;
 
-import com.developer.superuser.shared.openapi.contract.AmountData;
 import com.developer.superuser.shared.openapi.contract.VaRequest;
 import com.developer.superuser.shared.openapi.contract.VaResponse;
-import com.developer.superuser.virtualaccountservice.VirtualAccountServiceConstant;
 import com.developer.superuser.virtualaccountservice.vapayment.VaDetail;
 import org.springframework.stereotype.Component;
 
@@ -11,18 +9,18 @@ import org.springframework.stereotype.Component;
 public class VaMapper {
     public VaDetail mapCore(VaRequest request) {
         return VaDetail.builder()
-                .setHeader(request.getHeader().toBuilder()
-                        .setChannelId(VirtualAccountServiceConstant.VALUE_CHANNEL_ID)
-                        .build())
+                .setClientId(request.getClientId())
+                .setRequestId(request.getRequestId())
+                .setToken(request.getToken())
+                .setTokenScheme(request.getTokenScheme())
                 .setPaymentId(request.getPaymentId())
                 .setPartnerId(request.getPartnerId())
-                .setRequestId(request.getHeader().getRequestId())
                 .setCustomerNo(request.getCustomerNo())
                 .setVaNo(request.getVaNo())
                 .setVaName(request.getVaName())
                 .setBilledAmount(request.getBilledAmount())
-                .setAdditional(request.getAdditional())
                 .setTransactionType(request.getTransactionType())
+                .setAdditional(request.getAdditional())
                 .build();
     }
 
@@ -45,10 +43,7 @@ public class VaMapper {
         return VaResponse.builder()
                 .setPaymentId(va.getPaymentId())
                 .setVaNo(va.getVaNo())
-                .setBilledAmount(AmountData.builder()
-                        .setValue(va.getBilledAmount().getValue())
-                        .setCurrency(va.getBilledAmount().getCurrency())
-                        .build())
+                .setBilledAmount(va.getBilledAmount())
                 .setAdditional(va.getAdditional())
                 .setExpiredDate(va.getExpiredAt())
                 .build();

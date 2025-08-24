@@ -19,8 +19,8 @@ public class VaApiServiceAdapter implements VaApiService {
         log.debug("Calling doku api for creating va");
         Sign sign = symmetric.generate(signMapper.toSign(va));
         log.info("Printing symmetric sign result --- {}", sign);
-        va.getHeader().setSignature(sign.getSignature());
-        va.getHeader().setTimestamp(sign.getTimestamp());
+        va.setSignature(sign.getSignature());
+        va.setTimestamp(sign.getTimestamp());
         VaDetail vaResult = vaApi.dokuCreateVa(va);
         if (vaResult.getError() == null) {
             log.debug("Assign channel to va response");
