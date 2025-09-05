@@ -1,10 +1,8 @@
 package com.developer.superuser.virtualaccountservice.vapayment;
 
 import com.developer.superuser.shared.audit.StandardAuditable;
-import com.developer.superuser.shared.openapi.contract.AdditionalData;
-import com.developer.superuser.shared.openapi.contract.AmountData;
-import com.developer.superuser.shared.openapi.contract.ErrorData;
-import com.developer.superuser.shared.openapi.contract.TransactionType;
+import com.developer.superuser.shared.openapi.contract.*;
+import com.developer.superuser.virtualaccountservice.core.enumeration.PaymentStatus;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -30,7 +28,7 @@ public class VaDetail extends StandardAuditable {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String token;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private String tokenScheme;
+    private TokenScheme tokenScheme;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String signature;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
@@ -55,6 +53,7 @@ public class VaDetail extends StandardAuditable {
     private TransactionType transactionType;
     @JsonProperty("expiredDate")
     private Instant expiredAt;
+    private PaymentStatus status;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private VaDetail virtualAccountData;

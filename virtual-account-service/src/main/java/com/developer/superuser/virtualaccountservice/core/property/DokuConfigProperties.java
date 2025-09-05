@@ -14,7 +14,6 @@ public class DokuConfigProperties {
     public static class Api {
         private String key;
         private String baseUrl;
-        private String clientId;
         private Map<String, String> endpoint;
     }
 }

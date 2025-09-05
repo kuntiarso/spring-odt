@@ -5,6 +5,7 @@ import com.developer.superuser.virtualaccountservice.VirtualAccountServiceConsta
 import com.developer.superuser.virtualaccountservice.vapayment.VaDetail;
 import com.google.common.base.Strings;
 import lombok.experimental.UtilityClass;
+import org.springframework.http.HttpHeaders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -17,7 +18,7 @@ public class Headers {
         map.add(VirtualAccountServiceConstant.HEADER_PARTNER_ID, va.getClientId());
         map.add(VirtualAccountServiceConstant.HEADER_EXTERNAL_ID, va.getRequestId());
         map.add(VirtualAccountServiceConstant.HEADER_CHANNEL_ID, VirtualAccountServiceConstant.HEADER_CHANNEL_ID);
-        map.add(VirtualAccountServiceConstant.HEADER_AUTHORIZATION, Strings.lenientFormat("%s %s", va.getTokenScheme(), va.getToken()));
+        map.add(HttpHeaders.AUTHORIZATION, Strings.lenientFormat("%s %s", va.getTokenScheme().getValue(), va.getToken()));
         return map;
     }
 }

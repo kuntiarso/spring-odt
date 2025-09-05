@@ -7,6 +7,8 @@ import com.developer.superuser.virtualaccountservice.core.embedding.AdditionalSe
 import com.developer.superuser.virtualaccountservice.vapayment.VaDetail;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+
 @Component
 public class VaPaymentDetailEntityMapper {
     public VaPaymentDetailEntity toEntity(VaDetail va) {
@@ -39,5 +41,16 @@ public class VaPaymentDetailEntityMapper {
                 .setTransactionType(va.getTransactionType().name().charAt(0))
                 .setExpiredAt(va.getExpiredAt())
                 .build();
+    }
+
+    public VaPaymentDetailEntity mapUpdate(VaPaymentDetailEntity entity, VaDetail va) {
+        if (Objects.nonNull(va.getPaidAmount())) {
+            entity.setPaidAmount(Amount.builder()
+                    .setValue(va.getPaidAmount().getValue())
+                    .setCurrency(Currency.valueOf(va.getPaidAmount().getCurrency()))
+                    .build());
+        }
+        entity.setPaymentStatus(va.getStatus());
+        return entity;
     }
 }

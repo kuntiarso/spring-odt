@@ -1,7 +1,9 @@
 package com.developer.superuser.virtualaccountservice.vapaymentresource;
 
+import com.developer.superuser.shared.openapi.contract.StatusResponse;
 import com.developer.superuser.shared.openapi.contract.VaRequest;
 import com.developer.superuser.shared.openapi.contract.VaResponse;
+import com.developer.superuser.virtualaccountservice.core.enumeration.PaymentStatus;
 import com.developer.superuser.virtualaccountservice.vapayment.VaDetail;
 import org.springframework.stereotype.Component;
 
@@ -39,9 +41,26 @@ public class VaMapper {
                 .build();
     }
 
+    public VaDetail mapCoreSuccess(StatusResponse response) {
+        return VaDetail.builder()
+                .setPaymentId(response.getAdditional().getPaymentId())
+                .setPaidAmount(response.getPaidAmount())
+                .setStatus(PaymentStatus.PAID)
+                .build();
+    }
+
+    public VaDetail mapCoreError(StatusResponse response) {
+        return VaDetail.builder()
+                .setPaymentId(response.getAdditional().getPaymentId())
+                .setStatus(PaymentStatus.FAILED)
+                .build();
+    }
+
     public VaResponse mapResponse(VaDetail va) {
         return VaResponse.builder()
                 .setPaymentId(va.getPaymentId())
+                .setPartnerId(va.getPartnerId())
+                .setCustomerNo(va.getCustomerNo())
                 .setVaNo(va.getVaNo())
                 .setBilledAmount(va.getBilledAmount())
                 .setAdditional(va.getAdditional())

@@ -11,13 +11,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class VaApiServiceAdapter implements VaApiService {
     private final Symmetric symmetric;
-    private final SignMapper signMapper;
+    private final VaApiMapper vaApiMapper;
     private final VaApi vaApi;
 
     @Override
     public VaDetail createVa(VaDetail va) {
         log.debug("Calling doku api for creating va");
-        Sign sign = symmetric.generate(signMapper.toSign(va));
+        Sign sign = symmetric.generate(vaApiMapper.mapSign(va));
         log.info("Printing symmetric sign result --- {}", sign);
         va.setSignature(sign.getSignature());
         va.setTimestamp(sign.getTimestamp());

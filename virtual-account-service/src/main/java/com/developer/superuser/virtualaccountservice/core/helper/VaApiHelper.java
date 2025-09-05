@@ -34,7 +34,7 @@ public class VaApiHelper implements Executor<Supplier<VaDetail>, VaDetail> {
             if (error != null) {
                 error.setStatus(rcse.getStatusCode().value());
             } else {
-                error = Errors.error(rcse.getStatusCode().value());
+                error = Errors.error(rcse.getStatusCode().value(), rcse.getLocalizedMessage());
             }
         } catch (Exception ex) {
             log.error("Unknown error occurred while calling doku VA api", ex);

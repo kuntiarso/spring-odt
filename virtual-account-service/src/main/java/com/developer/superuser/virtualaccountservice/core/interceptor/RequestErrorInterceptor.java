@@ -26,7 +26,13 @@ public class RequestErrorInterceptor {
 
     @ExceptionHandler({MethodArgumentTypeMismatchException.class, HttpMessageNotReadableException.class})
     public ResponseEntity<?> interceptTypeMismatchOrInvalidJson(Exception ex) {
-        ErrorData error = Errors.error(HttpStatus.BAD_REQUEST.value(), ex.getLocalizedMessage());
+        ErrorData error = Errors.badRequest(ex.getLocalizedMessage());
+        return new ResponseEntity<>(ResponseData.error(error), HttpStatus.valueOf(error.getStatus()));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> interceptGeneralException(Exception ex) {
+        ErrorData error = Errors.internalServerError(ex.getLocalizedMessage());
         return new ResponseEntity<>(ResponseData.error(error), HttpStatus.valueOf(error.getStatus()));
     }
 }
