@@ -1,6 +1,7 @@
 package com.developer.superuser.tokenservice.token;
 
 import com.developer.superuser.shared.openapi.contract.ErrorData;
+import com.developer.superuser.shared.openapi.contract.TokenScheme;
 import com.developer.superuser.shared.openapi.contract.TokenType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -29,7 +30,7 @@ public class Token implements Serializable {
     private String grantType;
     private String authCode;
     @JsonProperty("tokenType")
-    private String tokenScheme;
+    private TokenScheme tokenScheme;
     private String accessToken;
     private Instant accessTokenExpiryTime;
     private String refreshToken;
