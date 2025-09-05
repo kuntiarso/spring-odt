@@ -1,8 +1,9 @@
 package com.developer.superuser.paymentservice.vasvcadapter;
 
+import com.developer.superuser.paymentservice.core.helper.ApiHelper;
 import com.developer.superuser.paymentservice.core.property.VaSvcConfigProperties;
-import com.developer.superuser.shared.data.ResponseData;
-import com.fasterxml.jackson.databind.JsonNode;
+import com.developer.superuser.shared.openapi.contract.VaRequest;
+import com.developer.superuser.shared.openapi.contract.VaResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
@@ -15,14 +16,15 @@ import org.springframework.web.client.RestClient;
 public class VaSvcApi {
     private final RestClient vaSvcRestClient;
     private final VaSvcConfigProperties vaSvcConfig;
+    private final ApiHelper<VaResponse> apiHelper;
 
-    public ResponseData<JsonNode> createVa(JsonNode request) {
-        log.info("Request body for create va --- {}", request.toString());
-        return vaSvcRestClient.post()
-                .uri(vaSvcConfig.getEndpoint().get("va-create"))
-                .body(request)
-                .retrieve()
-                .body(new ParameterizedTypeReference<>() {
-                });
+    public VaResponse createVa(VaRequest request) {
+        return apiHelper.execute(() ->
+                vaSvcRestClient.post()
+                        .uri(vaSvcConfig.getEndpoint().get("va-create"))
+                        .body(request)
+                        .retrieve()
+                        .body(new ParameterizedTypeReference<>() {
+                        }));
     }
 }

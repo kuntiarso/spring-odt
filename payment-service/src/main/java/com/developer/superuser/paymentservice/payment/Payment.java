@@ -1,9 +1,9 @@
 package com.developer.superuser.paymentservice.payment;
 
 import com.developer.superuser.paymentservice.core.enumeration.PaymentStatus;
-import com.developer.superuser.paymentservice.core.enumeration.PaymentType;
 import com.developer.superuser.shared.audit.StandardAuditable;
-import com.developer.superuser.shared.data.AmountData;
+import com.developer.superuser.shared.openapi.contract.AmountData;
+import com.developer.superuser.shared.openapi.contract.PaymentType;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
@@ -21,9 +21,9 @@ import java.time.Instant;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Payment extends StandardAuditable {
-    private Long id;
-    private Long orderId;
-    private Long userId;
+    private String id;
+    private String orderId;
+    private String userId;
     private String requestId;
     private PaymentType type;
     private String gateway;

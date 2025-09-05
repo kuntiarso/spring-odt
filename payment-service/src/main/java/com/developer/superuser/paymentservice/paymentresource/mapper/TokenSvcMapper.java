@@ -1,33 +1,22 @@
 package com.developer.superuser.paymentservice.paymentresource.mapper;
 
-import com.developer.superuser.paymentservice.PaymentServiceConstant;
 import com.developer.superuser.paymentservice.core.property.DokuConfigProperties;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.developer.superuser.shared.openapi.contract.GrantType;
+import com.developer.superuser.shared.openapi.contract.TokenRequest;
+import com.developer.superuser.shared.openapi.contract.TokenType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class TokenSvcJsonMapper {
-    private final ObjectMapper mapper;
+public class TokenSvcMapper {
     private final DokuConfigProperties dokuConfig;
 
-    public JsonNode toSignJsonRequest(String signType) {
-        if (PaymentServiceConstant.SIGN_TYPE_BASIC.equalsIgnoreCase(signType)) {
-            return mapper.createObjectNode()
-                    .put("signType", PaymentServiceConstant.SIGN_TYPE_BASIC)
-                    .put("clientId", dokuConfig.getMerchant().getClientId());
-        }
-        return mapper.createObjectNode();
-    }
-
-    public JsonNode toTokenJsonRequest(JsonNode signJsonResponse) {
-        return mapper.createObjectNode()
-                .put("tokenType", "B2B")
-                .put("clientId", dokuConfig.getMerchant().getClientId())
-                .put("signature", signJsonResponse.path("signature").asText(""))
-                .put("grantType", "CLIENT_CREDENTIALS")
-                .put("timestamp", signJsonResponse.path("timestamp").asText(""));
+    public TokenRequest mapRequest() {
+        return TokenRequest.builder()
+                .setClientId(dokuConfig.getMerchant().getClientId())
+                .setTokenType(TokenType.B2B)
+                .setGrantType(GrantType.CLIENT_CREDENTIALS)
+                .build();
     }
 }

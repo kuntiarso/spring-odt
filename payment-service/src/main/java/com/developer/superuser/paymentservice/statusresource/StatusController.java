@@ -1,8 +1,8 @@
-package com.developer.superuser.paymentservice.paymentresource;
+package com.developer.superuser.paymentservice.statusresource;
 
 import com.developer.superuser.shared.data.ResponseData;
 import com.developer.superuser.shared.openapi.contract.ErrorData;
-import com.developer.superuser.shared.openapi.contract.PaymentRequest;
+import com.developer.superuser.shared.openapi.contract.StatusRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,18 +17,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("payment")
 @RequiredArgsConstructor
 @Slf4j
-public class PaymentController {
-    private final PaymentHandler paymentHandler;
+public class StatusController {
+    private final StatusHandler statusHandler;
 
-    @PostMapping("va")
-    public ResponseEntity<?> createPaymentVa(@Valid @RequestBody PaymentRequest request) {
-        log.info("Request detail for create payment va --- {}", request);
-        ResponseData<?> response = paymentHandler.createPaymentVa(request);
+    @PostMapping("status")
+    public ResponseEntity<?> checkPaymentStatus(@Valid @RequestBody StatusRequest request) {
+        log.info("Request detail for check payment status --- {}", request);
+        ResponseData<?> response = statusHandler.checkPaymentStatus(request);
         if (response.getBody() instanceof ErrorData error) {
-            log.error("Error detail for create payment va --- {}", response);
+            log.error("Error detail for check payment status --- {}", response);
             return new ResponseEntity<>(response, HttpStatus.valueOf(error.getStatus()));
         }
-        log.info("Response detail for create payment va --- {}", response);
+        log.info("Response detail for check payment status --- {}", response);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

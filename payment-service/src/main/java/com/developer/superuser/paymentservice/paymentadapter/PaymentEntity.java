@@ -2,9 +2,9 @@ package com.developer.superuser.paymentservice.paymentadapter;
 
 import com.developer.superuser.paymentservice.PaymentServiceConstant;
 import com.developer.superuser.paymentservice.core.enumeration.PaymentStatus;
-import com.developer.superuser.paymentservice.core.enumeration.PaymentType;
 import com.developer.superuser.shared.audit.StandardAuditableEntity;
 import com.developer.superuser.shared.embedding.Amount;
+import com.developer.superuser.shared.openapi.contract.PaymentType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;

@@ -1,20 +1,27 @@
 package com.developer.superuser.paymentservice.vasvcadapter;
 
-import com.developer.superuser.paymentservice.core.helper.OptionalOrElseThrow;
+import com.developer.superuser.paymentservice.paymentresource.mapper.TokenSvcMapper;
+import com.developer.superuser.paymentservice.tokensvc.TokenSvcApiService;
 import com.developer.superuser.paymentservice.vasvc.VaSvcApiService;
-import com.fasterxml.jackson.databind.JsonNode;
+import com.developer.superuser.shared.openapi.contract.TokenResponse;
+import com.developer.superuser.shared.openapi.contract.VaRequest;
+import com.developer.superuser.shared.openapi.contract.VaResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @RequiredArgsConstructor
 @Slf4j
 public class VaSvcApiServiceAdapter implements VaSvcApiService {
+    private final TokenSvcMapper tokenSvcMapper;
+    private final TokenSvcApiService tokenSvcApiService;
     private final VaSvcApi vaSvcApi;
-    private final OptionalOrElseThrow<JsonNode> optionalOrElseThrow;
 
     @Override
-    public JsonNode createVa(JsonNode request) {
-        log.info("Calling va-service api for creating va");
-        return optionalOrElseThrow.execute(vaSvcApi.createVa(request)).getBody();
+    public VaResponse createVa(VaRequest request) {
+        log.debug("Calling va svc api for creating va");
+        TokenResponse token = tokenSvcApiService.getToken(tokenSvcMapper.mapRequest());
+        log.info("Printing token b2b result --- {}", token);
+        request.setToken(token.getAccessToken());
+        return vaSvcApi.createVa(request);
     }
 }

@@ -1,7 +1,8 @@
 package com.developer.superuser.paymentservice.vasvc;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.developer.superuser.shared.openapi.contract.VaRequest;
+import com.developer.superuser.shared.openapi.contract.VaResponse;
 
 public interface VaSvcApiService {
-    JsonNode createVa(JsonNode request);
+    VaResponse createVa(VaRequest request);
 }

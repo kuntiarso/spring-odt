@@ -1,8 +1,9 @@
 package com.developer.superuser.paymentservice.tokensvcadapter;
 
+import com.developer.superuser.paymentservice.core.helper.ApiHelper;
 import com.developer.superuser.paymentservice.core.property.TokenSvcConfigProperties;
-import com.developer.superuser.shared.data.ResponseData;
-import com.fasterxml.jackson.databind.JsonNode;
+import com.developer.superuser.shared.openapi.contract.TokenRequest;
+import com.developer.superuser.shared.openapi.contract.TokenResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
@@ -15,24 +16,16 @@ import org.springframework.web.client.RestClient;
 public class TokenSvcApi {
     private final RestClient tokenSvcRestClient;
     private final TokenSvcConfigProperties tokenSvcConfig;
+    private final ApiHelper<TokenResponse> apiHelper;
 
-    public ResponseData<JsonNode> getSign(JsonNode request) {
-        log.info("Request body for generate signature --- {}", request.toString());
-        return tokenSvcRestClient.post()
-                .uri(tokenSvcConfig.getEndpoint().get("get-sign"))
-                .body(request)
-                .retrieve()
-                .body(new ParameterizedTypeReference<>() {
-                });
-    }
-
-    public ResponseData<JsonNode> getToken(JsonNode request) {
-        log.info("Request body for get token --- {}", request.toString());
-        return tokenSvcRestClient.post()
-                .uri(tokenSvcConfig.getEndpoint().get("get-token"))
-                .body(request)
-                .retrieve()
-                .body(new ParameterizedTypeReference<>() {
-                });
+    public TokenResponse getToken(TokenRequest request) {
+        return apiHelper.execute(() ->
+                tokenSvcRestClient.post()
+                        .uri(tokenSvcConfig.getEndpoint().get("get-token"))
+                        .body(request)
+                        .retrieve()
+                        .body(new ParameterizedTypeReference<>() {
+                        })
+        );
     }
 }
