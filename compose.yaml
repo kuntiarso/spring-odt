@@ -1,0 +1,49 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: springodt-mysql-local
+    hostname: springodt-mysql-local
+    ports:
+      - 3306:3306
+    volumes:
+      - springodt-mysql-local-data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_LOCAL_ROOT_PASSWORD}
+      - MYSQL_USER=appuser
+      - MYSQL_PASSWORD=${MYSQL_LOCAL_PASSWORD}
+      - MYSQL_DATABASE=appodt
+    restart: unless-stopped
+  redis:
+    image: redis:8.2
+    container_name: springodt-redis-local
+    hostname: springodt-redis-local
+    command: >
+      sh -c "exec redis-server --requirepass $$REDIS_PASSWORD"
+    ports:
+      - 6379:6379
+    volumes:
+      - springodt-redis-local-data:/data
+    environment:
+      - REDIS_PASSWORD=${REDIS_LOCAL_PASSWORD}
+    restart: unless-stopped
+  rabbitmq:
+    image: rabbitmq:4.1-management
+    container_name: springodt-rabbitmq-local
+    hostname: springodt-rabbitmq-local
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - springodt-rabbitmq-local-data:/var/lib/rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=appuser
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_LOCAL_PASSWORD}
+    restart: unless-stopped
+
+volumes:
+  springodt-mysql-local-data:
+    name: springodt-mysql-local-data
+  springodt-redis-local-data:
+    name: springodt-redis-local-data
+  springodt-rabbitmq-local-data:
+    name: springodt-rabbitmq-local-data
