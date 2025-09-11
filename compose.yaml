@@ -12,6 +12,8 @@ services:
       - MYSQL_USER=appuser
       - MYSQL_PASSWORD=${MYSQL_LOCAL_PASSWORD}
       - MYSQL_DATABASE=appodt
+    networks:
+      - podman
     restart: unless-stopped
   redis:
     image: redis:8.2
@@ -25,6 +27,8 @@ services:
       - springodt-redis-local-data:/data
     environment:
       - REDIS_PASSWORD=${REDIS_LOCAL_PASSWORD}
+    networks:
+      - podman
     restart: unless-stopped
   rabbitmq:
     image: rabbitmq:4.1-management
@@ -38,6 +42,59 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=appuser
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_LOCAL_PASSWORD}
+    networks:
+      - podman
+    restart: unless-stopped
+  prometheus:
+    image: prom/prometheus:v3.5.0
+    container_name: springodt-prometheus-local
+    hostname: springodt-prometheus-local
+    command: -config.file=/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+    volumes:
+      - ./.prom/prometheus.yml:/etc/prometheus/prometheus.yml
+      - springodt-prometheus-local-data:/prometheus
+    networks:
+      - podman
+    restart: unless-stopped
+  grafana:
+    image: grafana/grafana:12.1
+    container_name: springodt-grafana-local
+    hostname: springodt-grafana-local
+    ports:
+      - 3000:3000
+    volumes:
+      - springodt-grafana-local-data:/var/lib/grafana
+    networks:
+      - podman
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+  loki:
+    image: grafana/loki:3.5
+    container_name: springodt-loki-local
+    hostname: springodt-loki-local
+    command: -config.file=/etc/loki/local-config.yaml
+    ports:
+      - 3100:3100
+    volumes:
+      - ./.grafana/loki-config.yaml:/etc/loki/local-config.yaml
+      - springodt-loki-local-data:/loki
+    networks:
+      - podman
+    restart: unless-stopped
+  promtail:
+    image: grafana/promtail:3.5
+    container_name: springodt-promtail-local
+    hostname: springodt-promtail-local
+    command: -config.file=/etc/promtail/config.yml
+    volumes:
+      - ./.grafana/promtail-config.yml:/etc/promtail/config.yml
+    networks:
+      - podman
+    depends_on:
+      - loki
     restart: unless-stopped
 
 volumes:
@@ -47,3 +104,14 @@ volumes:
     name: springodt-redis-local-data
   springodt-rabbitmq-local-data:
     name: springodt-rabbitmq-local-data
+  springodt-prometheus-local-data:
+    name: springodt-prometheus-local-data
+  springodt-grafana-local-data:
+    name: springodt-grafana-local-data
+  springodt-loki-local-data:
+    name: springodt-loki-local-data
+
+networks:
+  podman:
+    name: podman
+    driver: bridge
