@@ -2,7 +2,6 @@ services:
   mysql:
     image: mysql:8.0
     container_name: springodt-mysql-local
-    hostname: springodt-mysql-local
     ports:
       - 3306:3306
     volumes:
@@ -18,7 +17,6 @@ services:
   redis:
     image: redis:8.2
     container_name: springodt-redis-local
-    hostname: springodt-redis-local
     command: >
       sh -c "exec redis-server --requirepass $$REDIS_PASSWORD"
     ports:
@@ -33,7 +31,6 @@ services:
   rabbitmq:
     image: rabbitmq:4.1-management
     container_name: springodt-rabbitmq-local
-    hostname: springodt-rabbitmq-local
     ports:
       - 5672:5672
       - 15672:15672
@@ -48,7 +45,6 @@ services:
   prometheus:
     image: prom/prometheus:v3.5.0
     container_name: springodt-prometheus-local
-    hostname: springodt-prometheus-local
     command: -config.file=/etc/prometheus/prometheus.yml
     ports:
       - 9090:9090
@@ -61,7 +57,6 @@ services:
   grafana:
     image: grafana/grafana:12.1
     container_name: springodt-grafana-local
-    hostname: springodt-grafana-local
     ports:
       - 3000:3000
     volumes:
@@ -74,7 +69,6 @@ services:
   loki:
     image: grafana/loki:3.5
     container_name: springodt-loki-local
-    hostname: springodt-loki-local
     command: -config.file=/etc/loki/local-config.yaml
     ports:
       - 3100:3100
@@ -87,14 +81,103 @@ services:
   promtail:
     image: grafana/promtail:3.5
     container_name: springodt-promtail-local
-    hostname: springodt-promtail-local
     command: -config.file=/etc/promtail/config.yml
     volumes:
       - ./.grafana/promtail-config.yml:/etc/promtail/config.yml
+      - /var/log/journal:/var/log/journal:ro # give access to journald logs
+      - /etc/machine-id:/etc/machine-id:ro # required for journal reader
     networks:
       - podman
     depends_on:
       - loki
+    restart: unless-stopped
+  tempo:
+    image: grafana/tempo:2.8.2
+    container_name: springodt-tempo-local
+    command: -config.file=/etc/tempo.yaml
+    ports:
+      - 3200:3200
+    volumes:
+      - ./.grafana/tempo-config.yaml:/etc/tempo.yaml
+      - springodt-tempo-local-data:/var/tempo
+    networks:
+      - podman
+    restart: unless-stopped
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.135.0
+    container_name: springodt-otelcollector-local
+    command: --config=/etc/otelcol-contrib/config.yaml
+    ports:
+      - 1888:1888 # pprof extension
+      - 8888:8888 # prometheus metrics exposed by the collector
+      - 8889:8889 # prometheus exporter metrics
+      - 13133:13133 # health_check extension
+      - 4317:4317 # otlp grpc receiver
+      - 4318:4318 # otlp http receiver
+      - 55679:55679 # zpages extension
+    volumes:
+      - ./.otel/collector-config.yaml:/etc/otelcol-contrib/config.yaml
+    networks:
+      - podman
+    restart: unless-stopped
+  token-service:
+    image: ghcr.io/kuntiarso/spring-odt-tokenservice:latest
+    container_name: springodt-token-service-local
+    command: >
+      java -javaagent:/otel/opentelemetry-javaagent.jar
+           -jar /app/token-service.jar
+    volumes:
+      - ${HOME}/project/agent/opentelemetry-javaagent.jar:/otel/opentelemetry-javaagent.jar
+    environment:
+      - OTEL_SERVICE_NAME=token-service
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
+      - OTEL_METRICS_EXPORTER=otlp
+      - OTEL_LOGS_EXPORTER=none
+    networks:
+      - podman
+    depends_on:
+      - otel-collector
+    restart: unless-stopped
+  va-service:
+    image: ghcr.io/kuntiarso/spring-odt-virtualaccountservice:latest
+    container_name: springodt-va-service-local
+    command: >
+      java -javaagent:/otel/opentelemetry-javaagent.jar
+           -jar /app/virtual-account-service.jar
+    volumes:
+      - ${HOME}/project/agent/opentelemetry-javaagent.jar:/otel/opentelemetry-javaagent.jar
+    environment:
+      - OTEL_SERVICE_NAME=va-service
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
+      - OTEL_METRICS_EXPORTER=otlp
+      - OTEL_LOGS_EXPORTER=none
+    networks:
+      - podman
+    depends_on:
+      - otel-collector
+    restart: unless-stopped
+  payment-service:
+    image: ghcr.io/kuntiarso/spring-odt-paymentservice:latest
+    container_name: springodt-payment-service-local
+    command: >
+      java -javaagent:/otel/opentelemetry-javaagent.jar
+           -jar /app/payment-service.jar
+    ports:
+      - 43203:43203
+    volumes:
+      - ${HOME}/project/agent/opentelemetry-javaagent.jar:/otel/opentelemetry-javaagent.jar
+    environment:
+      - OTEL_SERVICE_NAME=payment-service
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
+      - OTEL_METRICS_EXPORTER=otlp
+      - OTEL_LOGS_EXPORTER=none
+    networks:
+      - podman
+    depends_on:
+      - otel-collector
     restart: unless-stopped
 
 volumes:
@@ -110,6 +193,8 @@ volumes:
     name: springodt-grafana-local-data
   springodt-loki-local-data:
     name: springodt-loki-local-data
+  springodt-tempo-local-data:
+    name: springodt-tempo-local-data
 
 networks:
   podman:
