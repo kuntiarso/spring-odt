@@ -28,6 +28,7 @@ public class MqListenerServiceAdapter implements MqListenerService {
         }
     }
 
+    @RabbitListener(queues = VirtualAccountServiceConstant.MQ_QUEUE_PAYMENT_STATUS_ERROR)
     @Override
     public void handlePaymentStatusQueueError(StatusResponse response) {
         try {
