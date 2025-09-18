@@ -1,25 +1,14 @@
-<configuration scan="true">
-    <!-- JSON Appender (structured logs for Loki/ELK/Grafana) -->
-    <appender name="JSON" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
-            <providers>
-                <!-- Standard fields -->
-                <timestamp/>
-                <logLevel/>
-                <threadName/>
-                <loggerName/>
-                <message/>
-                <!-- Include MDC so OpenTelemetry's trace_id/span_id go in the log body -->
-                <mdc/>
-                <!-- Optional: Spring context info -->
-                <context/>
-                <!-- Optional: structured arguments -->
-                <arguments/>
-            </providers>
-        </encoder>
-    </appender>
-    <!-- Root logger -->
-    <root level="INFO">
-        <appender-ref ref="JSON"/>
-    </root>
+<configuration>
+  <springProperty scope="context" name="APP_NAME" source="spring.application.name"/>
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>
+        %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} -
+        [traceId=%X{trace_id:-}] [spanId=%X{span_id:-}] %msg%n
+      </pattern>
+    </encoder>
+  </appender>
+  <root level="INFO">
+    <appender-ref ref="CONSOLE" />
+  </root>
 </configuration>
