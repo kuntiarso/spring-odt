@@ -1,31 +1,13 @@
-<configuration scan="true">
-    <!-- Include trace/span IDs from OpenTelemetry (MDC) -->
+<configuration>
+    <springProperty scope="context" name="APP_NAME" source="spring.application.name"/>
     <property name="LOG_PATTERN"
-              value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg traceId=%X{trace_id} spanId=%X{span_id}%n"/>
-    <!-- Console Appender (plain text, good for local dev) -->
-    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg traceId=%X{traceId} spanId=%X{spanId}%n"/>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>${LOG_PATTERN}</pattern>
         </encoder>
     </appender>
-    <!-- JSON Appender (structured logs for Loki/ELK) -->
-    <appender name="JSON" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
-            <providers>
-                <timestamp/>
-                <logLevel/>
-                <threadName/>
-                <loggerName/>
-                <message/>
-                <mdc/> <!-- contains trace_id, span_id injected by OTel agent -->
-                <context/> <!-- spring env, etc -->
-                <arguments/> <!-- structured args if used with logger.info("msg {}", obj) -->
-            </providers>
-        </encoder>
-    </appender>
-    <!-- Root logger -->
     <root level="INFO">
-        <appender-ref ref="CONSOLE"/>
-        <appender-ref ref="JSON"/>
+        <appender-ref ref="STDOUT"/>
     </root>
 </configuration>
